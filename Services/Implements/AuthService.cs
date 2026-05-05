@@ -1,12 +1,11 @@
 ﻿using break_back.Models.Dtos;
 using break_back.Repositories;
-using break_back.Models.Dtos;
-using break_back.Repositories;
 using break_back.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace break_back.Services.Implements;
 
-public class AuthService
+public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
     
@@ -29,7 +28,7 @@ public class AuthService
         return isPasswordValid;
     }
     
-    public async Task<bool> RegisterAsync(UserRegisterDto userloginDto)
+    public async Task<bool> RegisterUser(UserRegisterDto userloginDto)
     {
         var existingUser = _unitOfWork.Repository<User>().FindByName(userloginDto.Email);
         if (existingUser != null) return false;
