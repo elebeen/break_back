@@ -1,4 +1,6 @@
-﻿using break_back.Models;
+﻿using Microsoft.EntityFrameworkCore;
+
+using break_back.Models;
 
 namespace break_back.Repositories.Implements;
 
@@ -34,5 +36,10 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     public void Delete(TEntity entity)
     {
         _context.Set<TEntity>().Remove(entity);
+    }
+    
+    public TEntity FindByName(string name)
+    {
+        return _context.Set<TEntity>().FirstOrDefault(e => EF.Property<string>(e, "Name") == name);
     }
 }
