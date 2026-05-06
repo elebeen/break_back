@@ -1,5 +1,8 @@
 using break_back.Models;
 using break_back.Models.Dtos.RestaurantDtos;
+using break_back.Models.Dtos.MealDtos;
+using break_back.Models.Dtos.NutritionalInfo;
+using break_back.Models.Dtos.Ingredients;
 using Microsoft.EntityFrameworkCore;
 
 namespace break_back.Services.Implements;
@@ -28,21 +31,69 @@ public class CatalogService : ICatalogService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Meal>> GetMenuByRestaurant(Guid restaurantId)
+    public async Task<IEnumerable<MealDto>> GetMenuByRestaurant(Guid restaurantId)
     {
-        // Obtenemos las comidas de un restaurante incluyendo su info nutricional
         return await _context.Meals
-            .Include(m => m.NutritionalInfo)
+            .AsNoTracking()                    // Mejor rendimiento
             .Where(m => m.RestaurantId == restaurantId && m.IsActive == true)
+            .Select(m => new MealDto
+            {
+                Id = m.Id,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                ImageUrl = m.ImageUrl,
+                IsActive = m.IsActive,
+
+                NutritionalInfo = m.NutritionalInfo != null ? new NutritionalInfoDto
+                {
+                    Calories = m.NutritionalInfo.Calories,
+                    ProteinG = m.NutritionalInfo.ProteinG,
+                    CarbsG = m.NutritionalInfo.CarbsG,
+                    FatsG = m.NutritionalInfo.FatsG,
+                    SodiumMg = m.NutritionalInfo.SodiumMg,
+                    SugarG = m.NutritionalInfo.SugarG,
+                    FiberG = m.NutritionalInfo.FiberG
+                } : null
+            })
             .ToListAsync();
     }
 
-    public async Task<Meal?> GetMealDetails(Guid mealId)
+    public async Task<MealDetailsDto?> GetMealDetails(Guid mealId)
     {
-        // Carga completa: Comida + Info Nutricional + Ingredientes
         return await _context.Meals
-            .Include(m => m.NutritionalInfo)
-            .Include(m => m.Ingredients)
-            .FirstOrDefaultAsync(m => m.Id == mealId);
+            .AsNoTracking()
+            .Where(m => m.Id == mealId)
+            .Select(m => new MealDetailsDto
+            {
+                Id = m.Id,
+                RestaurantId = m.RestaurantId,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                ImageUrl = m.ImageUrl,
+                IsActive = m.IsActive,
+
+                NutritionalInfo = m.NutritionalInfo != null ? new NutritionalInfoDto
+                {
+                    Calories = m.NutritionalInfo.Calories,
+                    ProteinG = m.NutritionalInfo.ProteinG,
+                    CarbsG = m.NutritionalInfo.CarbsG,
+                    FatsG = m.NutritionalInfo.FatsG,
+                    SodiumMg = m.NutritionalInfo.SodiumMg,
+                    SugarG = m.NutritionalInfo.SugarG,
+                    FiberG = m.NutritionalInfo.FiberG
+                } : null,
+
+                Ingredients = m.Ingredients
+                    .Select(i => new IngredientDto
+                    {
+                        Id = i.Id,
+                        Name = i.Name,
+                        IsAllergen = i.IsAllergen
+                    })
+                    .ToList()
+            })
+            .FirstOrDefaultAsync();
     }
 }
