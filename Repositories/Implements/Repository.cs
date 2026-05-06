@@ -40,6 +40,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     
     public TEntity FindByName(string name)
     {
-        return _context.Set<TEntity>().FirstOrDefault(e => EF.Property<string>(e, "Name") == name);
+        return _context.Set<TEntity>().FirstOrDefault(e => EF.Property<string>(e, "FullName") == name);
     }
 }

@@ -16,7 +16,7 @@ public class AuthService : IAuthService
     
     public bool ValidateUser(UserLoginDto user)
     {
-        var existingUser = _unitOfWork.Repository<User>().FindByName(user.Email);
+        var existingUser = _unitOfWork.Repository<User>().FindByName(user.FullName);
         
         if (user == null)
         {
