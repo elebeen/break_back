@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using break_back.Models;
+using break_back.Models.Dtos.HealthProfileDtos;
 using break_back.Services;
 
 namespace break_back.Controllers;
@@ -16,7 +16,7 @@ public class HealthController : ControllerBase
     }
 
     [HttpPost("profile")]
-    public async Task<IActionResult> UpdateProfile([FromBody] HealthProfile profile)
+    public async Task<IActionResult> UpdateProfile([FromBody]Guid userId, HealthProfileCreateDto profile)
     {
         // En una app real, el UserId vendría del Token JWT (User.Claims)
         // Por ahora lo simulamos o lo recibes en el body

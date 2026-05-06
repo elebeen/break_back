@@ -1,4 +1,4 @@
-﻿using break_back.Models.Dtos;
+﻿using break_back.Models.Dtos.UserDtos;
 
 namespace break_back.Services;
 

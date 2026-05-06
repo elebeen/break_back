@@ -22,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IHealthService, IHealthService>();
 
 var app = builder.Build();
 
