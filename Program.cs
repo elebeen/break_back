@@ -4,9 +4,6 @@ using break_back.Repositories;
 using break_back.Repositories.Implements;
 using break_back.Services;
 using break_back.Services.Implements;
-using DotNetEnv;
-
-Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddDbContext<Context>(options =>
 //    options.UseNpgsql(connectionString));
 
-var connectionString = $"Host={Env.GetString("DB_HOST")};" +
-                       $"Port={Env.GetString("DB_PORT")};" +
-                       $"Database={Env.GetString("DB_NAME")};" +
-                       $"Username={Env.GetString("DB_USER")};" +
-                       $"Password={Env.GetString("DB_PASSWORD")}";
-
 builder.Services.AddDbContext<Context>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
