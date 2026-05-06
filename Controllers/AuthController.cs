@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
             return Unauthorized();
         }
 
-        return Ok();
+        return Ok("Iniciando sesión");
     }
 
     [HttpPost]
