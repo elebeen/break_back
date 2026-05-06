@@ -1,4 +1,5 @@
 using break_back.Models;
+using break_back.Models.Dtos.RestaurantDtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace break_back.Services.Implements;
@@ -12,11 +13,18 @@ public class CatalogService : ICatalogService
         _context = context;
     }
 
-    public async Task<IEnumerable<Restaurant>> GetActiveRestaurants()
+    public async Task<IEnumerable<RestaurantDto>> GetActiveRestaurants()
     {
-        // Filtramos solo los restaurantes marcados como activos
         return await _context.Restaurants
+            .AsNoTracking()                    // Mejor performance (recomendado en consultas de solo lectura)
             .Where(r => r.IsActive == true)
+            .Select(r => new RestaurantDto
+            {
+                Name         = r.Name,
+                Address      = r.Address,
+                ContactPhone = r.ContactPhone,
+                IsActive     = r.IsActive
+            })
             .ToListAsync();
     }
 
