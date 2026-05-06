@@ -1,4 +1,5 @@
 using break_back.Models;
+using break_back.Models.Dtos.HealthProfileDtos;
 using Microsoft.EntityFrameworkCore;
 using break_back.Repositories;
 
@@ -7,7 +8,7 @@ namespace break_back.Services.Implements;
 public class HealthService : IHealthService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Context _context; // Usamos el context para facilitar Includes
+    private readonly Context _context;
 
     public HealthService(IUnitOfWork unitOfWork, Context context)
     {
@@ -15,31 +16,32 @@ public class HealthService : IHealthService
         _context = context;
     }
 
-    public async Task<HealthProfile> UpsertProfile(Guid userId, HealthProfile profileData)
+    public async Task<HealthProfile> UpsertProfile(Guid userId, HealthProfileCreateDto profileData)
     {
         // 1. Buscar si ya existe el perfil para el usuario
         var profile = await _context.HealthProfiles
             .FirstOrDefaultAsync(p => p.UserId == userId);
-
+        
         if (profile == null)
         {
-            // Crear nuevo perfil
-            profileData.UserId = userId;
-            _unitOfWork.Repository<HealthProfile>().Add(profileData);
-            profile = profileData;
+            var newProfile = new HealthProfile()
+            {
+                UserId = userId,
+                Goal = profileData.Goal,
+                DailyCalorieTarget = profileData.DailyCalorieTarget,
+                DailySodiumLimitMg = profileData.DailySodiumLimitMg,
+                DailySugarLimitG = profileData.DailySugarLimitG,
+            };
+        
+            _unitOfWork.Repository<HealthProfile>().Update(newProfile);
+            await _unitOfWork.SaveChanges();
+            
+            return newProfile;
         }
         else
         {
-            // Actualizar campos existentes
-            profile.Goal = profileData.Goal;
-            profile.DailyCalorieTarget = profileData.DailyCalorieTarget;
-            profile.DailySodiumLimitMg = profileData.DailySodiumLimitMg;
-            profile.DailySugarLimitG = profileData.DailySugarLimitG;
-            _unitOfWork.Repository<HealthProfile>().Update(profile);
+            return profile;
         }
-
-        await _unitOfWork.SaveChanges(); //
-        return profile;
     }
 
     public async Task AddConditionToUser(Guid userId, int conditionId)

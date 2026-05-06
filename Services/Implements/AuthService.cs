@@ -1,4 +1,4 @@
-﻿using break_back.Models.Dtos;
+﻿using break_back.Models.Dtos.UserDtos;
 using break_back.Repositories;
 using break_back.Models;
 using Microsoft.AspNetCore.Authentication;
