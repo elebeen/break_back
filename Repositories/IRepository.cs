@@ -10,4 +10,5 @@ public interface IRepository<TEntity> where TEntity : class
     void Update(TEntity entity);
     void Delete(TEntity entity);
     TEntity FindByName(string name);
+    IQueryable<TEntity> GetAllQueryable();
 }

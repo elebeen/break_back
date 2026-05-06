@@ -13,10 +13,10 @@ public class HealthController : ControllerBase
     public HealthController(IHealthService healthService)
     {
         _healthService = healthService;
-    }
+    }   
 
     [HttpPost("profile")]
-    public async Task<IActionResult> UpdateProfile([FromBody]Guid userId, HealthProfileCreateDto profile)
+    public async Task<IActionResult> UpdateProfile(HealthProfileCreateDto profile)
     {
         // En una app real, el UserId vendría del Token JWT (User.Claims)
         // Por ahora lo simulamos o lo recibes en el body
