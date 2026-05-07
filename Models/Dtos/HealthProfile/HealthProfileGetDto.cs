@@ -1,9 +1,9 @@
+﻿using break_back.Models.Dtos.MedicalCondition;
+
 namespace break_back.Models.Dtos.HealthProfile;
 
-public class HealthProfileCreateDto
+public class HealthProfileGetDto
 {
-    public Guid UserId { get; set; }
-
     public string Goal { get; set; } = null!;
 
     public int? DailyCalorieTarget { get; set; }

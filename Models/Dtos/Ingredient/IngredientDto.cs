@@ -1,4 +1,4 @@
-namespace break_back.Models.Dtos.Ingredients;
+namespace break_back.Models.Dtos.Ingredient;
 
 public class IngredientDto
 {

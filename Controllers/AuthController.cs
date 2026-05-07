@@ -1,4 +1,4 @@
-﻿using break_back.Models.Dtos.UserDtos;
+﻿using break_back.Models.Dtos.User;
 using break_back.Services;
 using Microsoft.AspNetCore.Mvc;
 

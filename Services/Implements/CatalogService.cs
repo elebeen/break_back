@@ -1,8 +1,8 @@
 using break_back.Models;
-using break_back.Models.Dtos.RestaurantDtos;
-using break_back.Models.Dtos.MealDtos;
+using break_back.Models.Dtos.Restaurant;
+using break_back.Models.Dtos.Meal;
 using break_back.Models.Dtos.NutritionalInfo;
-using break_back.Models.Dtos.Ingredients;
+using break_back.Models.Dtos.Ingredient;
 using Microsoft.EntityFrameworkCore;
 
 namespace break_back.Services.Implements;

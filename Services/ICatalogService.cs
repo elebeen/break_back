@@ -1,5 +1,5 @@
-using break_back.Models.Dtos.RestaurantDtos;
-using break_back.Models.Dtos.MealDtos;
+using break_back.Models.Dtos.Restaurant;
+using break_back.Models.Dtos.Meal;
 
 namespace break_back.Services;
 

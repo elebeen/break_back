@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using break_back.Models.Dtos.HealthProfileDtos;
+using break_back.Models.Dtos.HealthProfile;
+using break_back.Models.Dtos.User;
 using break_back.Services;
 
 namespace break_back.Controllers;
@@ -13,13 +14,17 @@ public class HealthController : ControllerBase
     public HealthController(IHealthService healthService)
     {
         _healthService = healthService;
-    }   
+    }
 
-    [HttpPost("profile")]
+    [HttpGet("/profile/{userId}")]
+    public async Task<UserHealthProfileDto> GetProfile(Guid userId)
+    {
+        return await _healthService.GetProfile(userId);
+    }
+    
+    [HttpPost]
     public async Task<IActionResult> UpdateProfile(HealthProfileCreateDto profile)
     {
-        // En una app real, el UserId vendría del Token JWT (User.Claims)
-        // Por ahora lo simulamos o lo recibes en el body
         var result = await _healthService.UpsertProfile(profile.UserId, profile);
         return Ok(result);
     }
@@ -29,5 +34,12 @@ public class HealthController : ControllerBase
     {
         await _healthService.AddConditionToUser(userId, conditionId);
         return Ok(new { message = "Condición añadida correctamente" });
+    }
+
+    [HttpDelete("/{userId}/")]
+    public async Task<IActionResult> RemoveCondition(Guid userId, int conditionId)
+    {
+        await _healthService.RemoveConditionFromUser(userId, conditionId);
+        return Ok( new { message = "Condición eliminda correctamente"});
     }
 }
