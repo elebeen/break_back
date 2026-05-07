@@ -1,4 +1,4 @@
-namespace break_back.Models.Dtos.RestaurantDtos;
+namespace break_back.Models.Dtos.Restaurant;
 
 public class RestaurantDto
 {

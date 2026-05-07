@@ -1,6 +1,6 @@
 using break_back.Models.Dtos.NutritionalInfo;
 
-namespace break_back.Models.Dtos.MealDtos;
+namespace break_back.Models.Dtos.Meal;
 
 public class MealDto
 {

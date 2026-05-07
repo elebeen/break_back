@@ -9,7 +9,7 @@ public partial class Ingredient
 
     public string Name { get; set; } = null!;
 
-    public bool? IsAllergen { get; set; }
+    public bool IsAllergen { get; set; }
 
     public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
 }

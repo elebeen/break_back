@@ -1,4 +1,4 @@
-﻿namespace break_back.Models.Dtos.UserDtos;
+﻿namespace break_back.Models.Dtos.User;
 
 public class UserRegisterDto
 {
