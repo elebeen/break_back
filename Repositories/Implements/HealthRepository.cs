@@ -43,4 +43,43 @@ public class HealthRepository : IHealthRepository
             })
             .FirstOrDefaultAsync();
     }
+
+    public async Task<List<MedicalConditionGetDto>> GetConditionsByUserId(Guid userId)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Conditions)
+            .Select(c => new MedicalConditionGetDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Type = c.Type,
+                // Agrega más campos según tu entidad
+            })
+            .ToListAsync();
+    }
+
+    public async Task<MedicalCondition?> GetConditionByUserId(Guid userId, int conditionId)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Conditions)           // Navega a través de la tabla intermedia
+            .FirstOrDefaultAsync(c => c.Id == conditionId);
+    }
+    
+    public async Task RemoveConditionFromUser(Guid userId, int conditionId)
+    {
+        var user = await _context.Users
+            .Include(u => u.Conditions
+                .Where(c => c.Id == conditionId))   // Solo cargamos la que queremos
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user?.Conditions.Any() == true)
+        {
+            var condition = user.Conditions.First();
+            user.Conditions.Remove(condition);
+        }
+    }
 }

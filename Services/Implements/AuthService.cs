@@ -1,7 +1,6 @@
 ﻿using break_back.Models.Dtos.User;
 using break_back.Repositories;
 using break_back.Models;
-using Microsoft.AspNetCore.Authentication;
 
 namespace break_back.Services.Implements;
 
