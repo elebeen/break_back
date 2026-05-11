@@ -25,7 +25,7 @@ public class HealthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> UpdateProfile(HealthProfileCreateDto profile)
     {
-        var result = await _healthService.UpsertProfile(profile.UserId, profile);
+        var result = await _healthService.UpdateProfile(profile.UserId, profile);
         return Ok(result);
     }
 
