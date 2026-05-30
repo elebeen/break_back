@@ -6,7 +6,7 @@ namespace nutria.Application.UseCases.Health.Queries;
 
 public record GetUserProfileQuery(Guid UserId) : IRequest<UserHealthProfileDto?>;
 
-public class GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, UserHealthProfileDto?>
+internal sealed record GetUserProfileQueryHandler : IRequestHandler<GetUserProfileQuery, UserHealthProfileDto?>
 {
     private readonly IUnitOfWork _unitOfWork;
     public GetUserProfileQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;

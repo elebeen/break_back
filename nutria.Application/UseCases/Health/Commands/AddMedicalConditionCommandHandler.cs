@@ -6,7 +6,7 @@ namespace nutria.Application.UseCases.Health.Commands;
 
 public record AddMedicalConditionCommand(Guid UserId, int ConditionId) : IRequest<Unit>;
 
-public class AddMedicalConditionCommandHandler : IRequestHandler<AddMedicalConditionCommand, Unit>
+internal sealed record AddMedicalConditionCommandHandler : IRequestHandler<AddMedicalConditionCommand, Unit>
 {
     private readonly IUnitOfWork _unitOfWork;
     public AddMedicalConditionCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;

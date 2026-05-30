@@ -7,7 +7,7 @@ namespace nutria.Application.UseCases.Auth.Queries;
 
 public record LoginUserCommand(UserLoginDto UserLogin) : IRequest<bool>;
 
-public class LoginUserQueryHandler : IRequestHandler<LoginUserCommand, bool>
+internal sealed record LoginUserQueryHandler : IRequestHandler<LoginUserCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 

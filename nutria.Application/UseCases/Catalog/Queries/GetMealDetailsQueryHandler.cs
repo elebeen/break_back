@@ -9,7 +9,7 @@ namespace nutria.Application.UseCases.Catalog.Queries;
 
 public record GetMealDetailsQuery(Guid MealId) : IRequest<MealDetailsDto?>;
 
-public class GetMealDetailsQueryHandler : IRequestHandler<GetMealDetailsQuery, MealDetailsDto?>
+internal sealed record GetMealDetailsQueryHandler : IRequestHandler<GetMealDetailsQuery, MealDetailsDto?>
 {
     private readonly Context _context;
     public GetMealDetailsQueryHandler(Context context) => _context = context;
