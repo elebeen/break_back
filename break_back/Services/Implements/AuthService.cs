@@ -1,14 +1,14 @@
-﻿using break_back.Models.Dtos.User;
+﻿/*using break_back.Models.Dtos.User;
 using break_back.Repositories;
 using break_back.Models;
 
 namespace break_back.Services.Implements;
 
-public class AuthService : IAuthService
+public class Mediator : IMediator
 {
     private readonly IUnitOfWork _unitOfWork;
     
-    public AuthService(IUnitOfWork unitOfWork)
+    public Mediator(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -48,4 +48,4 @@ public class AuthService : IAuthService
         
         return true;
     }
-}
+}*/

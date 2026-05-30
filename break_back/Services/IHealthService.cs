@@ -1,4 +1,4 @@
-using break_back.Models;
+/*using break_back.Models;
 using break_back.Models.Dtos.HealthProfile;
 using break_back.Models.Dtos.User;
 
@@ -11,4 +11,4 @@ public interface IHealthService
     Task AddConditionToUser(Guid userId, int conditionId);
     Task RemoveConditionFromUser(Guid userId, int conditionId);
     Task RemoveAllConditionsFromUser(Guid userId);
-}
+}*/

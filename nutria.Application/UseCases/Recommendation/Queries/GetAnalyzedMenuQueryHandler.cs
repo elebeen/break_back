@@ -1,32 +1,27 @@
-﻿/*using break_back.Models.Dtos.Meal;
-using break_back.Models;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Nutria.Domain.Dtos.Meal;
+using Nutria.Domain.Models;
 
-namespace break_back.Services.Implements;
+namespace nutria.Application.UseCases.Recommendation.Queries;
 
-public class RecommendationService : IRecommendationService
+public record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWithIndicatorsDto>>;
 
+public class GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzedMenuQuery, List<MealWithIndicatorsDto>>
 {
     private readonly Context _context;
+    public GetAnalyzedMenuQueryHandler(Context context) => _context = context;
 
-    public RecommendationService(Context context)
+    public async Task<List<MealWithIndicatorsDto>> Handle(GetAnalyzedMenuQuery request, CancellationToken cancellationToken)
     {
-        _context = context;
-    }
-
-    public async Task<List<MealWithIndicatorsDto>> GetAnalyzedMenu(Guid userId)
-    {
-        // 1. Obtener perfil del usuario y sus condiciones médicas
         var user = await _context.Users
             .AsNoTracking()
             .Include(u => u.HealthProfile)
             .Include(u => u.Conditions)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-        if (user == null)
-            return new List<MealWithIndicatorsDto>();
-        
-        // 2. Obtener platillos con su info nutricional e ingredientes
+        if (user == null) return new List<MealWithIndicatorsDto>();
+
         var mealData = await _context.Meals
             .AsNoTracking()
             .Where(m => m.IsActive == true)
@@ -37,31 +32,25 @@ public class RecommendationService : IRecommendationService
                 m.Price,
                 m.RestaurantId,
                 RestaurantName = m.Restaurant.Name,
-
                 NutritionalInfo = m.NutritionalInfo != null ? new
                 {
                     m.NutritionalInfo.Calories,
                     m.NutritionalInfo.SugarG,
                     m.NutritionalInfo.SodiumMg
                 } : null,
-
                 Allergens = m.Ingredients
                     .Where(i => i.IsAllergen)
                     .Select(i => i.Name.ToLower())
                     .ToList()
-            })
-            .ToListAsync();
+            }).ToListAsync(cancellationToken);
 
         var result = new List<MealWithIndicatorsDto>(mealData.Count);
-
-        var userConditions = user.Conditions
-            .Select(c => c.Name.ToLower())
-            .ToList();
+        var userConditions = user.Conditions.Select(c => c.Name.ToLower()).ToList();
 
         var dailyCalorieTarget = user.HealthProfile?.DailyCalorieTarget ?? 0;
         var dailySugarLimit = user.HealthProfile?.DailySugarLimitG ?? 0;
         var dailySodiumLimit = user.HealthProfile?.DailySodiumLimitMg ?? 0;
-        
+
         foreach (var m in mealData)
         {
             var dto = new MealWithIndicatorsDto
@@ -74,20 +63,13 @@ public class RecommendationService : IRecommendationService
                 SpecificWarnings = new List<string>()
             };
 
-            // Validaciones Nutricionales
             if (m.NutritionalInfo != null)
             {
-                dto.ExceedsCalorieLimit = dailyCalorieTarget > 0 && 
-                                          m.NutritionalInfo.Calories > dailyCalorieTarget;
-
-                dto.ExceedsSugarLimit = dailySugarLimit > 0 && 
-                                        m.NutritionalInfo.SugarG > dailySugarLimit;
-
-                dto.ExceedsSodiumLimit = dailySodiumLimit > 0 && 
-                                         m.NutritionalInfo.SodiumMg > dailySodiumLimit;
+                dto.ExceedsCalorieLimit = dailyCalorieTarget > 0 && m.NutritionalInfo.Calories > dailyCalorieTarget;
+                dto.ExceedsSugarLimit = dailySugarLimit > 0 && m.NutritionalInfo.SugarG > dailySugarLimit;
+                dto.ExceedsSodiumLimit = dailySodiumLimit > 0 && m.NutritionalInfo.SodiumMg > dailySodiumLimit;
             }
 
-            // Detección de Alérgenos
             foreach (var condition in userConditions)
             {
                 if (m.Allergens.Any(a => condition.Contains(a) || a.Contains(condition)))
@@ -96,10 +78,9 @@ public class RecommendationService : IRecommendationService
                     dto.SpecificWarnings.Add($"Contiene ingredientes relacionados con: {condition}");
                 }
             }
-
             result.Add(dto);
         }
 
         return result;
     }
-}*/
+}

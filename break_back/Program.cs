@@ -1,27 +1,17 @@
-using break_back.Models;
-using Microsoft.EntityFrameworkCore;
-using break_back.Repositories;
-using break_back.Repositories.Implements;
-using break_back.Services;
-using break_back.Services.Implements;
+using break_back;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<Context>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IHealthRepository, HealthRepository>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Administrator", policy => policy.RequireRole("Administrator"));
+});
 
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IHealthService, HealthService>();
-builder.Services.AddScoped<ICatalogService, CatalogService>();
-builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
@@ -38,6 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

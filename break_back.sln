@@ -4,6 +4,12 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "break_back", "break_back\break_back.csproj", "{584854E7-A8CD-46D2-B6DD-741B065D0612}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nutria.Application", "nutria.Application\nutria.Application.csproj", "{9A474588-1FD2-4DD7-B503-9EF51ABE67AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutria.Domain", "Nutria.Domain\Nutria.Domain.csproj", "{840ED54F-6277-4233-8FC1-7D6B318D3A8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutria.Infrastructure", "Nutria.Infrastructure\Nutria.Infrastructure.csproj", "{206517EA-9A2A-4164-BDD9-FA5780279026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +20,18 @@ Global
 		{584854E7-A8CD-46D2-B6DD-741B065D0612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{584854E7-A8CD-46D2-B6DD-741B065D0612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{584854E7-A8CD-46D2-B6DD-741B065D0612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A474588-1FD2-4DD7-B503-9EF51ABE67AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A474588-1FD2-4DD7-B503-9EF51ABE67AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A474588-1FD2-4DD7-B503-9EF51ABE67AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A474588-1FD2-4DD7-B503-9EF51ABE67AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{840ED54F-6277-4233-8FC1-7D6B318D3A8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{840ED54F-6277-4233-8FC1-7D6B318D3A8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{840ED54F-6277-4233-8FC1-7D6B318D3A8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{840ED54F-6277-4233-8FC1-7D6B318D3A8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{206517EA-9A2A-4164-BDD9-FA5780279026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{206517EA-9A2A-4164-BDD9-FA5780279026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{206517EA-9A2A-4164-BDD9-FA5780279026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{206517EA-9A2A-4164-BDD9-FA5780279026}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

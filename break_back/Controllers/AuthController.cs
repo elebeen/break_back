@@ -1,6 +1,7 @@
-﻿using break_back.Models.Dtos.User;
-using break_back.Services;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using nutria.Application.UseCases.Auth.Commands;
+using nutria.Application.UseCases.Auth.Queries;
 
 namespace break_back.Controllers;
 
@@ -8,31 +9,28 @@ namespace break_back.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IMediator _mediator;
     
-    public AuthController(IAuthService authService)
+    public AuthController(IMediator mediator)
     {
-        _authService = authService;
+        _mediator = mediator;
     }
 
     [HttpPost]
-    public IActionResult Login([FromBody] UserLoginDto userLoginDto)
+    public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
-        if (!_authService.ValidateUser(userLoginDto))
-        {
-            return Unauthorized();
-        }
+        await _mediator.Send(command);
 
         return Ok("Iniciando sesión");
     }
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
+    public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var success = await _authService.RegisterUser(userRegisterDto);
+        var success = await _mediator.Send(command);
 
         if (!success)
             return BadRequest("El usuario ya existe o hubo un error.");
