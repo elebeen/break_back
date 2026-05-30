@@ -11,3 +11,9 @@ public interface IHealthRepository
     public Task<MedicalCondition?> GetConditionByUserId(Guid userId, int conditionId);
     public Task RemoveConditionFromUser(Guid userId, int conditionId);
 }
+
+
+
+
+
+
