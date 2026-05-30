@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using break_back.Models.Dtos.HealthProfile;
-using break_back.Models.Dtos.User;
 using break_back.Services;
+using Microsoft.AspNetCore.Mvc;
+using Nutria.Domain.Dtos.HealthProfile;
+using Nutria.Domain.Dtos.User;
 
 namespace break_back.Controllers;
 

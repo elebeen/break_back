@@ -1,6 +1,6 @@
-/*using break_back.Models;
-using break_back.Models.Dtos.HealthProfile;
-using break_back.Models.Dtos.User;
+using Nutria.Domain.Dtos.HealthProfile;
+using Nutria.Domain.Dtos.User;
+using Nutria.Domain.Models;
 
 namespace break_back.Services;
 
@@ -11,4 +11,4 @@ public interface IHealthService
     Task AddConditionToUser(Guid userId, int conditionId);
     Task RemoveConditionFromUser(Guid userId, int conditionId);
     Task RemoveAllConditionsFromUser(Guid userId);
-}*/
+}
