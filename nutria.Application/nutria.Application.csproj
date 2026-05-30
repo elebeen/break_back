@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Catalog\Commands\" />
+      <Folder Include="UseCases\Order\Queries\" />
     </ItemGroup>
 
 </Project>

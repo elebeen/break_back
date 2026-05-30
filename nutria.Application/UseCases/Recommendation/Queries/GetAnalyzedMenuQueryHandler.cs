@@ -5,9 +5,9 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Recommendation.Queries;
 
-public record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWithIndicatorsDto>>;
+public abstract record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWithIndicatorsDto>>;
 
-public class GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzedMenuQuery, List<MealWithIndicatorsDto>>
+internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzedMenuQuery, List<MealWithIndicatorsDto>>
 {
     private readonly Context _context;
     public GetAnalyzedMenuQueryHandler(Context context) => _context = context;

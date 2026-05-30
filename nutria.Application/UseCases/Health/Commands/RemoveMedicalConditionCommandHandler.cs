@@ -7,7 +7,7 @@ namespace nutria.Application.UseCases.Health.Commands;
 
 public record RemoveMedicalConditionCommand(Guid UserId, int ConditionId) : IRequest<Unit>;
 
-public class RemoveMedicalConditionCommandHandler : IRequestHandler<RemoveMedicalConditionCommand, Unit>
+internal sealed record RemoveMedicalConditionCommandHandler : IRequestHandler<RemoveMedicalConditionCommand, Unit>
 {
     private readonly Context _context;
     private readonly IUnitOfWork _unitOfWork;

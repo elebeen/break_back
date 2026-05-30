@@ -7,7 +7,7 @@ namespace nutria.Application.UseCases.Auth.Commands;
 
 public record RegisterUserCommand(UserRegisterDto UserRegister) : IRequest<bool>;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, bool>
+internal sealed record RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 

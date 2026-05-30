@@ -7,7 +7,7 @@ namespace nutria.Application.UseCases.Health.Commands;
 
 public record UpdateHealthProfileCommand(Guid UserId, HealthProfileCreateDto ProfileData) : IRequest<HealthProfile>;
 
-public class UpdateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, HealthProfile>
+internal sealed record UpdateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, HealthProfile>
 {
     private readonly IUnitOfWork _unitOfWork;
     public UpdateHealthProfileCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;

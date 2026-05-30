@@ -7,7 +7,7 @@ namespace nutria.Application.UseCases.Catalog.Queries;
 
 public record GetActiveRestaurantsQuery : IRequest<IEnumerable<RestaurantDto>>;
 
-public class GetActiveRestaurantsQueryHandler : IRequestHandler<GetActiveRestaurantsQuery, IEnumerable<RestaurantDto>>
+internal sealed record GetActiveRestaurantsQueryHandler : IRequestHandler<GetActiveRestaurantsQuery, IEnumerable<RestaurantDto>>
 {
     private readonly Context _context;
 
