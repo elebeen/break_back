@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nutria.Domain.Interfaces;
+using Nutria.Infrastructure.Persistence.Context;
 using Nutria.Infrastructure.Repositories;
 using Nutria.Infrastructure.Services;
 
@@ -12,7 +13,7 @@ public static class InfrastructureServices
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         //Database Connection
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<AppdbContext>(options =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             options.UseNpgsql(connectionString);

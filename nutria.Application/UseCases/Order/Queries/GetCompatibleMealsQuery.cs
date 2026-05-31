@@ -10,23 +10,23 @@ public record GetCompatibleMealsQuery(Guid UserId)
 public class GetCompatibleMealsQueryHandler
     : IRequestHandler<GetCompatibleMealsQuery,List<Meal>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetCompatibleMealsQueryHandler(Context context)
+    public GetCompatibleMealsQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<List<Meal>> Handle(
         GetCompatibleMealsQuery request,
         CancellationToken cancellationToken)
     {
-        var profile = await _context.HealthProfiles
+        var profile = await _appdbContext.HealthProfiles
             .FirstOrDefaultAsync(
                 x => x.UserId == request.UserId,
                 cancellationToken);
 
-        return await _context.Meals
+        return await _appdbContext.Meals
             .Include(x => x.NutritionalInfo)
             .Where(x =>
                 x.NutritionalInfo.Calories <= profile.DailyCalorieTarget)

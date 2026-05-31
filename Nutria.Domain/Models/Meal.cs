@@ -24,3 +24,5 @@ public partial class Meal
 
     public virtual ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 }
+
+

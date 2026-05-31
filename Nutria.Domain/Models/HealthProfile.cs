@@ -16,3 +16,5 @@ public partial class HealthProfile
 
     public virtual User User { get; set; } = null!;
 }
+
+

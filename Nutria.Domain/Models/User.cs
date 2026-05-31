@@ -20,3 +20,6 @@ public partial class User
 
     public virtual ICollection<MedicalCondition> Conditions { get; set; } = new List<MedicalCondition>();
 }
+
+
+

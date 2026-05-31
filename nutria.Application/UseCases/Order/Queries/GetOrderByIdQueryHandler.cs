@@ -9,18 +9,18 @@ public record GetOrderByIdQuery(Guid OrderId) : IRequest<Order?>;
 public class GetOrderByIdQueryHandler
     : IRequestHandler<GetOrderByIdQuery, Order?>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetOrderByIdQueryHandler(Context context)
+    public GetOrderByIdQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<Order?> Handle(
         GetOrderByIdQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.Orders
+        return await _appdbContext.Orders
             .Include(x => x.OrderItems)
             .FirstOrDefaultAsync(
                 x => x.Id == request.OrderId,

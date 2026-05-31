@@ -9,18 +9,18 @@ public record RemoveMedicalConditionCommand(Guid UserId, int ConditionId) : IReq
 
 internal sealed record RemoveMedicalConditionCommandHandler : IRequestHandler<RemoveMedicalConditionCommand, Unit>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RemoveMedicalConditionCommandHandler(Context context, IUnitOfWork unitOfWork)
+    public RemoveMedicalConditionCommandHandler(AppdbContext appdbContext, IUnitOfWork unitOfWork)
     {
-        _context = context;
+        _appdbContext = appdbContext;
         _unitOfWork = unitOfWork;
     }
 
     public async Task<Unit> Handle(RemoveMedicalConditionCommand request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
+        var user = await _appdbContext.Users
             .Include(u => u.Conditions.Where(c => c.Id == request.ConditionId))
             .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 

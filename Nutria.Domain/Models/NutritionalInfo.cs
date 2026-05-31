@@ -22,3 +22,6 @@ public partial class NutritionalInfo
 
     public virtual Meal Meal { get; set; } = null!;
 }
+
+
+

@@ -9,13 +9,13 @@ public record GetActiveRestaurantsQuery : IRequest<IEnumerable<RestaurantDto>>;
 
 internal sealed record GetActiveRestaurantsQueryHandler : IRequestHandler<GetActiveRestaurantsQuery, IEnumerable<RestaurantDto>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetActiveRestaurantsQueryHandler(Context context) => _context = context;
+    public GetActiveRestaurantsQueryHandler(AppdbContext appdbContext) => _appdbContext = appdbContext;
 
     public async Task<IEnumerable<RestaurantDto>> Handle(GetActiveRestaurantsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Restaurants
+        return await _appdbContext.Restaurants
             .AsNoTracking()
             .Where(r => r.IsActive == true)
             .Select(r => new RestaurantDto

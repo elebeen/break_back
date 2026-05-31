@@ -10,12 +10,12 @@ public record GetMenuByRestaurantQuery(Guid RestaurantId) : IRequest<IEnumerable
 
 internal sealed record GetMenuByRestaurantQueryHandler : IRequestHandler<GetMenuByRestaurantQuery, IEnumerable<MealDto>>
 {
-    private readonly Context _context;
-    public GetMenuByRestaurantQueryHandler(Context context) => _context = context;
+    private readonly AppdbContext _appdbContext;
+    public GetMenuByRestaurantQueryHandler(AppdbContext appdbContext) => _appdbContext = appdbContext;
 
     public async Task<IEnumerable<MealDto>> Handle(GetMenuByRestaurantQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Meals
+        return await _appdbContext.Meals
             .AsNoTracking()
             .Where(m => m.RestaurantId == request.RestaurantId && m.IsActive == true)
             .Select(m => new MealDto

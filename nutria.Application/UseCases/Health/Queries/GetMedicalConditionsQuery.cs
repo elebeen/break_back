@@ -10,18 +10,18 @@ public record GetMedicalConditionsQuery()
 public class GetMedicalConditionsQueryHandler
     : IRequestHandler<GetMedicalConditionsQuery,List<MedicalCondition>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetMedicalConditionsQueryHandler(Context context)
+    public GetMedicalConditionsQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<List<MedicalCondition>> Handle(
         GetMedicalConditionsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.MedicalConditions
+        return await _appdbContext.MedicalConditions
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }

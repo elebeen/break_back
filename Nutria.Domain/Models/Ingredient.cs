@@ -10,3 +10,5 @@ public partial class Ingredient
 
     public virtual ICollection<Meal> Meals { get; set; } = new List<Meal>();
 }
+
+

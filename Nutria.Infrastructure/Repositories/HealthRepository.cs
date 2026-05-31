@@ -4,20 +4,21 @@ using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
 
 namespace Nutria.Infrastructure.Repositories;
 
 public class HealthRepository : IHealthRepository
 {
-    private readonly Context _context;
-    public HealthRepository(Context context)
+    private readonly AppdbContext _appdbContext;
+    public HealthRepository(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async  Task<UserHealthProfileDto?> GetUserHealthData(Guid userId)
     {   
-        return await _context.Users
+        return await _appdbContext.Users
             .AsNoTracking()
             .Where(u => u.Id == userId)
             .Select(u => new UserHealthProfileDto
@@ -47,7 +48,7 @@ public class HealthRepository : IHealthRepository
 
     public async Task<List<MedicalConditionGetDto>> GetConditionsByUserId(Guid userId)
     {
-        return await _context.Users
+        return await _appdbContext.Users
             .AsNoTracking()
             .Where(u => u.Id == userId)
             .SelectMany(u => u.Conditions)
@@ -63,7 +64,7 @@ public class HealthRepository : IHealthRepository
 
     public async Task<MedicalCondition?> GetConditionByUserId(Guid userId, int conditionId)
     {
-        return await _context.Users
+        return await _appdbContext.Users
             .AsNoTracking()
             .Where(u => u.Id == userId)
             .SelectMany(u => u.Conditions)           // Navega a través de la tabla intermedia
@@ -72,7 +73,7 @@ public class HealthRepository : IHealthRepository
     
     public async Task RemoveConditionFromUser(Guid userId, int conditionId)
     {
-        var user = await _context.Users
+        var user = await _appdbContext.Users
             .Include(u => u.Conditions
                 .Where(c => c.Id == conditionId))   // Solo cargamos la que queremos
             .FirstOrDefaultAsync(u => u.Id == userId);
