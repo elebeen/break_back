@@ -10,18 +10,18 @@ public record SearchMealsQuery(string Name)
 public class SearchMealsQueryHandler
     : IRequestHandler<SearchMealsQuery,List<Meal>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public SearchMealsQueryHandler(Context context)
+    public SearchMealsQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<List<Meal>> Handle(
         SearchMealsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.Meals
+        return await _appdbContext.Meals
             .AsNoTracking()
             .Where(x => x.Name.ToLower()
                 .Contains(request.Name.ToLower()))

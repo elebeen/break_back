@@ -9,12 +9,12 @@ public abstract record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWit
 
 internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzedMenuQuery, List<MealWithIndicatorsDto>>
 {
-    private readonly Context _context;
-    public GetAnalyzedMenuQueryHandler(Context context) => _context = context;
+    private readonly AppdbContext _appdbContext;
+    public GetAnalyzedMenuQueryHandler(AppdbContext appdbContext) => _appdbContext = appdbContext;
 
     public async Task<List<MealWithIndicatorsDto>> Handle(GetAnalyzedMenuQuery request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
+        var user = await _appdbContext.Users
             .AsNoTracking()
             .Include(u => u.HealthProfile)
             .Include(u => u.Conditions)
@@ -22,7 +22,7 @@ internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzed
 
         if (user == null) return new List<MealWithIndicatorsDto>();
 
-        var mealData = await _context.Meals
+        var mealData = await _appdbContext.Meals
             .AsNoTracking()
             .Where(m => m.IsActive == true)
             .Select(m => new

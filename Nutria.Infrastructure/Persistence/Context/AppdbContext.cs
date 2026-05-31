@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nutria.Domain.Models;
 
-namespace Nutria.Domain.Models;
+namespace Nutria.Infrastructure.Persistence.Context;
 
-public partial class Context : DbContext
+public partial class AppdbContext : DbContext
 {
-    public Context()
+    public AppdbContext()
     {
     }
 
-    public Context(DbContextOptions<Context> options)
+    public AppdbContext(DbContextOptions<AppdbContext> options)
         : base(options)
     {
     }

@@ -1,36 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces;
-using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
 
 namespace Nutria.Infrastructure.Repositories;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+public class Repository<TEntity> : IRepository<TEntity>
+    where TEntity : class
 {
-    private readonly Context _context;
+    protected readonly AppdbContext _context;
 
-    public Repository(Context context)
+    public Repository(AppdbContext context)
     {
         _context = context;
     }
 
-    public IEnumerable<TEntity> FindAll()
+    public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return _context.Set<TEntity>().ToList();
+        return await _context.Set<TEntity>().ToListAsync();
     }
 
-    public TEntity FindById(int id)
+    public async Task<TEntity?> GetByIdAsync(Guid id)
     {
-        return _context.Set<TEntity>().Find(id);
+        return await _context.Set<TEntity>().FindAsync(id);
     }
 
-    public TEntity FindbyGuid(Guid guid)
+    public async Task AddAsync(TEntity entity)
     {
-        return _context.Set<TEntity>().Find(guid);
-    }
-
-    public void Add(TEntity entity)
-    {
-        _context.Set<TEntity>().Add(entity);
+        await _context.Set<TEntity>().AddAsync(entity);
     }
 
     public void Update(TEntity entity)
@@ -42,14 +38,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         _context.Set<TEntity>().Remove(entity);
     }
-    
-    public TEntity FindByName(string name)
+
+    public IQueryable<TEntity> Query()
     {
-        return _context.Set<TEntity>().FirstOrDefault(e => EF.Property<string>(e, "FullName") == name);
-    }
-    
-    public IQueryable<TEntity> GetAllQueryable()
-    {
-        return _context.Set<TEntity>();
+        return _context.Set<TEntity>().AsQueryable();
     }
 }

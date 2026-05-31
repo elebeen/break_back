@@ -10,18 +10,18 @@ public record GetRecommendedRestaurantsQuery(Guid UserId)
 public class GetRecommendedRestaurantsQueryHandler
     : IRequestHandler<GetRecommendedRestaurantsQuery,List<Restaurant>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetRecommendedRestaurantsQueryHandler(Context context)
+    public GetRecommendedRestaurantsQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<List<Restaurant>> Handle(
         GetRecommendedRestaurantsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.Restaurants
+        return await _appdbContext.Restaurants
             .Where(r => r.IsActive == true)
             .OrderBy(r => r.Name)
             .ToListAsync(cancellationToken);

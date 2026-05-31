@@ -11,7 +11,7 @@ using Nutria.Domain.Models;
 
 namespace Nutria.Domain.Migrations
 {
-    [DbContext(typeof(Context))]
+    [DbContext(typeof(AppdbContext))]
     [Migration("20260505224625_InitialCreate")]
     partial class InitialCreate
     {

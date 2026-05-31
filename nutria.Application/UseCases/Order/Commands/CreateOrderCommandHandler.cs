@@ -13,12 +13,12 @@ public abstract record CreateOrderCommand(CheckoutRequest CheckoutRequest) : IRe
 internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
     
-    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, Context context)
+    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, AppdbContext appdbContext)
     {
         _unitOfWork = unitOfWork;
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<OrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCom
         foreach (var itemDto in request.CheckoutRequest.Items)
         {
             // Consultar el Meal a la BD para obtener el precio real y asegurar que pertenezca al restaurante
-            var meal = await _context.Meals.FirstOrDefaultAsync(m => m.Id == itemDto.MealId, cancellationToken: cancellationToken);
+            var meal = await _appdbContext.Meals.FirstOrDefaultAsync(m => m.Id == itemDto.MealId, cancellationToken: cancellationToken);
             
             if (meal == null)
                 throw new Exception($"El platillo con ID {itemDto.MealId} no existe.");
@@ -72,7 +72,7 @@ internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCom
 
         // 4. Mapear y proyectar el resultado final al DTO usando LINQ
         // Consultamos de nuevo usando Linq Projections para traer los nombres asociados sin cargar objetos circulares completos
-        var responseDto = await _context.Orders
+        var responseDto = await _appdbContext.Orders
             .Include(o => o.Restaurant)
             .Include(o => o.User)
             .Include(o => o.OrderItems)

@@ -9,18 +9,18 @@ public record GetUserOrdersQuery(Guid UserId) : IRequest<List<Order>>;
 public class GetUserOrdersQueryHandler
     : IRequestHandler<GetUserOrdersQuery, List<Order>>
 {
-    private readonly Context _context;
+    private readonly AppdbContext _appdbContext;
 
-    public GetUserOrdersQueryHandler(Context context)
+    public GetUserOrdersQueryHandler(AppdbContext appdbContext)
     {
-        _context = context;
+        _appdbContext = appdbContext;
     }
 
     public async Task<List<Order>> Handle(
         GetUserOrdersQuery request,
         CancellationToken cancellationToken)
     {
-        return await _context.Orders
+        return await _appdbContext.Orders
             .AsNoTracking()
             .Where(x => x.UserId == request.UserId)
             .OrderByDescending(x => x.CreatedAt)

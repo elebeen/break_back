@@ -11,12 +11,12 @@ public record GetMealDetailsQuery(Guid MealId) : IRequest<MealDetailsDto?>;
 
 internal sealed record GetMealDetailsQueryHandler : IRequestHandler<GetMealDetailsQuery, MealDetailsDto?>
 {
-    private readonly Context _context;
-    public GetMealDetailsQueryHandler(Context context) => _context = context;
+    private readonly AppdbContext _appdbContext;
+    public GetMealDetailsQueryHandler(AppdbContext appdbContext) => _appdbContext = appdbContext;
 
     public async Task<MealDetailsDto?> Handle(GetMealDetailsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Meals
+        return await _appdbContext.Meals
             .AsNoTracking()
             .Where(m => m.Id == request.MealId)
             .Select(m => new MealDetailsDto
