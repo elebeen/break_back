@@ -1,10 +1,11 @@
-﻿using Nutria.Domain.Models;
+﻿using Nutria.Domain.Dtos.Restaurant;
+using Nutria.Domain.Models;
 
 namespace Nutria.Domain.Interfaces;
 
 public interface IRestaurantRepository
 {
-    Task<List<Restaurant>> GetActiveRestaurantsAsync();
+    Task<List<RestaurantDto>> GetActiveRestaurantsAsync();
 
     Task<Restaurant?> GetRestaurantWithMealsAsync(Guid restaurantId);
 }

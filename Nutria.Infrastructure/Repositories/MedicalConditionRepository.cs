@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 using Nutria.Infrastructure.Persistence.Context;
@@ -7,43 +8,43 @@ namespace Nutria.Infrastructure.Repositories;
 
 public class MedicalConditionRepository : Repository<MedicalCondition>, IMedicalConditionRepository
 {
-    public MedicalConditionRepository(AppdbContext context)
-        : base(context)
+    public MedicalConditionRepository(AppdbContext context) : base(context) { }
+    
+    public async Task<List<MedicalConditionGetDto>> GetConditionsByUserId(Guid userId)
     {
-    }
-
-    public async Task<List<MedicalCondition>> GetAllAsync()
-    {
-        return await _context.MedicalConditions
+        return await _context.Users
             .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Conditions)
+            .Select(c => new MedicalConditionGetDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Type = c.Type,
+            })
             .ToListAsync();
     }
 
-    public async Task<MedicalCondition?> GetByIdAsync(int id)
+    public async Task<MedicalCondition?> GetConditionByUserId(Guid userId, int conditionId)
     {
-        return await _context.MedicalConditions
+        return await _context.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.Conditions)           // Navega a través de la tabla intermedia
+            .FirstOrDefaultAsync(c => c.Id == conditionId);
     }
-
-    public async Task<MedicalCondition?> GetByNameAsync(string name)
+    
+    public async Task RemoveConditionFromUser(Guid userId, int conditionId)
     {
-        return await _context.MedicalConditions
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Name == name);
-    }
+        var user = await _context.Users
+            .Include(u => u.Conditions
+                .Where(c => c.Id == conditionId))   // Solo cargamos la que queremos
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
-    public async Task<List<MedicalCondition>> GetByTypeAsync(string type)
-    {
-        return await _context.MedicalConditions
-            .AsNoTracking()
-            .Where(c => c.Type == type)
-            .ToListAsync();
-    }
-
-    public async Task<bool> ExistsAsync(string name)
-    {
-        return await _context.MedicalConditions
-            .AnyAsync(c => c.Name == name);
+        if (user != null && user.Conditions.Count != 0)
+        {
+            var condition = user.Conditions.First();
+            user.Conditions.Remove(condition);
+        }
     }
 }

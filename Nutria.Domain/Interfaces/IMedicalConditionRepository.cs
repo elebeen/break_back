@@ -1,16 +1,11 @@
-﻿using Nutria.Domain.Models;
+﻿using Nutria.Domain.Dtos.MedicalCondition;
+using Nutria.Domain.Models;
 
 namespace Nutria.Domain.Interfaces;
 
 public interface IMedicalConditionRepository
 {
-    Task<List<MedicalCondition>> GetAllAsync();
-
-    Task<MedicalCondition?> GetByIdAsync(int id);
-
-    Task<MedicalCondition?> GetByNameAsync(string name);
-
-    Task<List<MedicalCondition>> GetByTypeAsync(string type);
-
-    Task<bool> ExistsAsync(string name);
+    public Task<List<MedicalConditionGetDto>> GetConditionsByUserId(Guid userId);
+    public Task<MedicalCondition?> GetConditionByUserId(Guid userId, int conditionId);
+    public Task RemoveConditionFromUser(Guid userId, int conditionId);
 }

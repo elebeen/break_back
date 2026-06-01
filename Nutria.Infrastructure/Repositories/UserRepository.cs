@@ -7,9 +7,7 @@ namespace Nutria.Infrastructure.Repositories;
 
 public class UserRepository : Repository<User>, IUserRepository
 {
-    public UserRepository(AppdbContext context) : base(context)
-    {
-    }
+    public UserRepository(AppdbContext context) : base(context) { }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
@@ -24,10 +22,10 @@ public class UserRepository : Repository<User>, IUserRepository
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async Task<User?> GetUserWithConditionsAsync(Guid userId)
+    public async Task<User?> GetUserWithConditionsAsync(Guid userId, int conditionId )
     {
         return await _context.Users
-            .Include(u => u.Conditions)
+            .Include(u => u.Conditions.Where(c => c.Id == conditionId))
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 

@@ -5,8 +5,7 @@ using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Order.Queries;
 
-public record GetCompatibleMealsQuery(Guid UserId)
-    : IRequest<List<Meal>>;
+public record GetCompatibleMealsQuery(Guid UserId) : IRequest<List<Meal>>;
 
 public class GetCompatibleMealsQueryHandler
     : IRequestHandler<GetCompatibleMealsQuery,List<Meal>>
@@ -30,7 +29,7 @@ public class GetCompatibleMealsQueryHandler
         return await _appdbContext.Meals
             .Include(x => x.NutritionalInfo)
             .Where(x =>
-                x.NutritionalInfo.Calories <= profile.DailyCalorieTarget)
+                x.NutritionalInfo!.Calories <= profile!.DailyCalorieTarget)
             .ToListAsync(cancellationToken);
     }
 }

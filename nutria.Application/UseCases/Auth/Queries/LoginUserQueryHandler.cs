@@ -9,8 +9,7 @@ namespace nutria.Application.UseCases.Auth.Queries;
 
 public record LoginUserCommand(UserLoginDto UserLogin) : IRequest<bool>;
 
-internal sealed record LoginUserQueryHandler
-    : IRequestHandler<LoginUserCommand, bool>
+internal sealed record LoginUserQueryHandler : IRequestHandler<LoginUserCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -21,10 +20,7 @@ internal sealed record LoginUserQueryHandler
 
     public async Task<bool> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _unitOfWork
-            .Repository<User>()
-            .Query()
-            .FirstOrDefaultAsync(x => x.Email == request.UserLogin.Email, cancellationToken);
+        var existingUser = await _unitOfWork.Repository<User>().FindFirstAsync(u => u.Email == request.UserLogin.Email);
 
         if (existingUser == null)
             return false;

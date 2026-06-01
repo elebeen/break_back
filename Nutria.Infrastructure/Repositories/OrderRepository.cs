@@ -7,9 +7,7 @@ namespace Nutria.Infrastructure.Repositories;
 
 public class OrderRepository: Repository<Order>, IOrderRepository
 {
-    public OrderRepository(AppdbContext context) : base(context)
-    {
-    }
+    public OrderRepository(AppdbContext context) : base(context) { }
 
     public async Task<List<Order>> GetOrdersByUserAsync(Guid userId)
     {

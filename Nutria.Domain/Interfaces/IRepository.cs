@@ -1,14 +1,16 @@
-﻿namespace Nutria.Domain.Interfaces;
+﻿using System.Linq.Expressions;
+
+namespace Nutria.Domain.Interfaces;
 
 public interface IRepository<TEntity> where TEntity : class
 {
     Task<IEnumerable<TEntity>> GetAllAsync();
 
-    Task<TEntity?> GetByIdAsync(Guid id);
+    Task<TEntity?> FindFirstAsync(Expression<Func<TEntity, bool>> predicate);
 
     Task AddAsync(TEntity entity);
 
-    void Update(TEntity entity);
+    Task Update(TEntity entity);
 
     void Delete(TEntity entity);
 

@@ -68,7 +68,7 @@ internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCom
         order.TotalAmount = totalAmount;
 
         // 3. Persistencia utilizando Unit of Work
-        _unitOfWork.Repository<Nutria.Domain.Models.Order>().AddAsync(order);
+        await _unitOfWork.Repository<Nutria.Domain.Models.Order>().AddAsync(order);
         await _unitOfWork.SaveChanges();
 
         // 4. Mapear y proyectar el resultado final al DTO usando LINQ
