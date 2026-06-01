@@ -11,4 +11,8 @@ public interface IMealRepository
     Task<List<Meal>> GetMealsByCaloriesAsync(int maxCalories);
 
     Task<List<Meal>> GetMealsByConditionAsync(string conditionType);
+    
+    Task<List<Meal>> GetMealsByIdsAsync(List<Guid> mealIds);
+    
+    Task<List<Meal>> GetCompatibleMealsAsync(Guid userId);
 }
