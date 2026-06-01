@@ -5,20 +5,13 @@ using Nutria.Infrastructure.Persistence.Context;
 
 namespace Nutria.Infrastructure.Repositories;
 
-public class UserRepository : Repository<User>, IUserRepository
+public class UserRepository(AppdbContext context) : Repository<User>(context), IUserRepository
 {
-    public UserRepository(AppdbContext context) : base(context) { }
-
-    public async Task<User?> GetByEmailAsync(string email)
-    {
-        return await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == email);
-    }
-
-    public async Task<User?> GetUserWithHealthProfileAsync(Guid userId)
+    public async Task<User?> GetUserWithHealthProfileAndConditionsAsync(Guid userId)
     {
         return await _context.Users
             .Include(u => u.HealthProfile)
+            .Include(u => u.Conditions)
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 

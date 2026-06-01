@@ -1,10 +1,8 @@
-﻿    using MediatR;
-    using Microsoft.EntityFrameworkCore;
-    using Nutria.Domain.Interfaces;
-    using Nutria.Domain.Models;
-    using Nutria.Infrastructure.Persistence.Context;
+﻿/*using MediatR;
+using Nutria.Domain.Interfaces;
+using Nutria.Domain.Models;
 
-    namespace nutria.Application.UseCases.Order.Queries;
+namespace nutria.Application.UseCases.Orders.Queries;
 
     public record GetCompatibleMealsQuery(Guid UserId)
         : IRequest<List<Meal>>;
@@ -26,4 +24,7 @@
             return await _unitOfWork.Meals
                 .GetCompatibleMealsAsync(request.UserId);
         }
-    }
+    }*/
+    
+// nota
+// la clase GetAnalyzedMenuQueryHandler hace lo mismo

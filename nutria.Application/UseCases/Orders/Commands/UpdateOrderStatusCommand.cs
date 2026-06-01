@@ -2,7 +2,7 @@
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Order.Commands;
+namespace nutria.Application.UseCases.Orders.Commands;
 
 public record UpdateOrderStatusCommand(
     Guid OrderId,
@@ -23,14 +23,14 @@ public class UpdateOrderStatusCommandHandler
         UpdateOrderStatusCommand request,
         CancellationToken cancellationToken)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId);
+        var order = await _unitOfWork.Repository<Order>().FindFirstAsync(u => u.Id == request.OrderId);
 
         if (order is null)
             return false;
 
         order.OrderStatus = request.Status;
 
-        _unitOfWork.Orders.Update(order);
+        await _unitOfWork.Orders.Update(order);
 
         await _unitOfWork.SaveChanges();
 

@@ -16,5 +16,5 @@ public interface IMealRepository
     
     Task<List<Meal>> GetMealsByIdsAsync(List<Guid> mealIds);
     
-    Task<List<Meal>> GetCompatibleMealsAsync(Guid userId);
+    Task<List<MealWithIndicatorsDto>> GetCompatibleMealsAsync(Guid userId);
 }

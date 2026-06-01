@@ -6,10 +6,8 @@ using Nutria.Infrastructure.Persistence.Context;
 
 namespace Nutria.Infrastructure.Repositories;
 
-public class RestaurantRepository: Repository<Restaurant>, IRestaurantRepository
+public class RestaurantRepository(AppdbContext context) : Repository<Restaurant>(context), IRestaurantRepository
 {
-    public RestaurantRepository(AppdbContext context) : base(context) { }
-
     public async Task<List<RestaurantDto>> GetActiveRestaurantsAsync()
     {
         return await _context.Restaurants
