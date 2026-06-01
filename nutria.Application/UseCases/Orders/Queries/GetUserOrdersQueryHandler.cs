@@ -1,15 +1,14 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces;
-using Nutria.Infrastructure.Persistence.Context;
+using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Order.Queries;
+namespace nutria.Application.UseCases.Orders.Queries;
 
 public record GetUserOrdersQuery(Guid UserId)
-    : IRequest<List<Nutria.Domain.Models.Order>>;
+    : IRequest<List<Order>>;
 
 public class GetUserOrdersQueryHandler
-    : IRequestHandler<GetUserOrdersQuery, List<Nutria.Domain.Models.Order>>
+    : IRequestHandler<GetUserOrdersQuery, List<Order>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -18,7 +17,7 @@ public class GetUserOrdersQueryHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<Nutria.Domain.Models.Order>> Handle(
+    public async Task<List<Order>> Handle(
         GetUserOrdersQuery request,
         CancellationToken cancellationToken)
     {

@@ -23,7 +23,7 @@ public class UpdateMealNutritionalInfoCommandHandler : IRequestHandler<UpdateMea
     public async Task<bool> Handle(UpdateMealNutritionalInfoCommand request, CancellationToken cancellationToken)
     {
         // Buscamos el plato usando el método GetByIdAsync de tu IRepository
-        var meal = await _unitOfWork.Repository<Meal>().GetByIdAsync(request.MealId);
+        var meal = await _unitOfWork.Repository<Meal>().FindFirstAsync(u => u.Id == request.MealId);
         
         if (meal == null) return false;
 

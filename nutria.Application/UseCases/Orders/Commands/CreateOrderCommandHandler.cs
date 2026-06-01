@@ -1,13 +1,11 @@
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.Checkout;
 using Nutria.Domain.Dtos.Order;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
-using Nutria.Infrastructure.Persistence.Context;
 
 
-namespace nutria.Application.UseCases.Order.Commands;
+namespace nutria.Application.UseCases.Orders.Commands;
 
 public record CreateOrderCommand(CheckoutRequest CheckoutRequest) : IRequest<OrderResponse>;
 
@@ -21,26 +19,23 @@ public class CreateOrderCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<OrderResponse> Handle(
-        CreateOrderCommand request,
-        CancellationToken cancellationToken)
+    public async Task<OrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         var checkout = request.CheckoutRequest;
 
-        if (checkout.Items == null || !checkout.Items.Any())
+        if (checkout.Items == null || checkout.Items.Count == 0)
             throw new ArgumentException("El carrito no puede estar vacío.");
 
         var mealIds = checkout.Items
             .Select(x => x.MealId)
             .ToList();
 
-        var meals = await _unitOfWork.Meals
-            .GetMealsByIdsAsync(mealIds);
+        var meals = await _unitOfWork.Meals.GetMealsByIdsAsync(mealIds);
 
         if (meals.Count != mealIds.Count)
             throw new Exception("Uno o más platillos no existen.");
 
-        var order = new Nutria.Domain.Models.Order
+        var order = new Order
         {
             UserId = checkout.UserId,
             RestaurantId = checkout.RestaurantId,

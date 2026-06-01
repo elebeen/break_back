@@ -2,7 +2,7 @@
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Restaurant.Commands;
+namespace nutria.Application.UseCases.Restaurants.Commands;
 
 public record RegisterRestaurantCommand(
     string Name,
@@ -21,16 +21,15 @@ public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaura
 
     public async Task<Guid> Handle(RegisterRestaurantCommand request, CancellationToken cancellationToken)
     {
-        var restaurant = new Nutria.Domain.Models.Restaurant
+        var restaurant = new Restaurant
         {
-            Id = Guid.NewGuid(),
             Name = request.Name,
             Address = request.Address,
             ContactPhone = request.Phone,
             IsActive = true
         };
 
-        await _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().AddAsync(restaurant);
+        await _unitOfWork.Repository<Restaurant>().AddAsync(restaurant);
         
         await _unitOfWork.SaveChanges();
 

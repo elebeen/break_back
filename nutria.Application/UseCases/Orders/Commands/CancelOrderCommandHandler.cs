@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Order.Commands;
+namespace nutria.Application.UseCases.Orders.Commands;
 
 public record CancelOrderCommand(Guid OrderId)
     : IRequest<bool>;
 
-public class CancelOrderCommandHandler
-    : IRequestHandler<CancelOrderCommand, bool>
+public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -18,14 +18,14 @@ public class CancelOrderCommandHandler
 
     public async Task<bool> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId);
+        var order = await _unitOfWork.Repository<Order>().FindFirstAsync(u =>  u.Id == request.OrderId);
 
         if (order is null)
             return false;
 
         order.OrderStatus = "Cancelado";
 
-        _unitOfWork.Orders.Update(order);
+        await _unitOfWork.Orders.Update(order);
 
         await _unitOfWork.SaveChanges();
 
