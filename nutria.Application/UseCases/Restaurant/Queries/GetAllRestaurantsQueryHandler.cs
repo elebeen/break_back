@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurant.Queries;
 
-// Cambiamos el tipo de retorno a List<Nutria.Domain.Models.Restaurant> para que coincida exactamente con la interfaz
 public record GetAllRestaurantsQuery() : IRequest<List<Nutria.Domain.Models.Restaurant>>;
 
 public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQuery, List<Nutria.Domain.Models.Restaurant>>
@@ -17,8 +17,20 @@ public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQu
 
     public async Task<List<Nutria.Domain.Models.Restaurant>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
     {
+        var dtos = await _restaurantRepository.GetActiveRestaurantsAsync();
+        
+        if (dtos == null) return new List<Nutria.Domain.Models.Restaurant>();
 
-        var result = await _restaurantRepository.GetActiveRestaurantsAsync();
+        var result = dtos.Select(dto => new Nutria.Domain.Models.Restaurant
+        {
+
+            Id = Guid.NewGuid(), 
+            Name = dto.Name,
+            Address = dto.Address,
+            ContactPhone = dto.ContactPhone, 
+            IsActive = dto.IsActive
+        }).ToList();
+
         return result;
     }
 }
