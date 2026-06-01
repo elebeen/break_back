@@ -9,98 +9,78 @@ using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Order.Commands;
 
-public abstract record CreateOrderCommand(CheckoutRequest CheckoutRequest) : IRequest<OrderResponse>;
+public record CreateOrderCommand(CheckoutRequest CheckoutRequest) : IRequest<OrderResponse>;
 
-internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderResponse>
+public class CreateOrderCommandHandler
+    : IRequestHandler<CreateOrderCommand, OrderResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly AppdbContext _appdbContext;
-    
-    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, AppdbContext appdbContext)
+
+    public CreateOrderCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _appdbContext = appdbContext;
     }
 
-    public async Task<OrderResponse> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<OrderResponse> Handle(
+        CreateOrderCommand request,
+        CancellationToken cancellationToken)
     {
-      if (request.CheckoutRequest.Items == null || request.CheckoutRequest.Items.Count == 0)
+        var checkout = request.CheckoutRequest;
+
+        if (checkout.Items == null || !checkout.Items.Any())
             throw new ArgumentException("El carrito no puede estar vacío.");
 
-        // 1. Instanciar la orden base (entidad de persistencia)
+        var mealIds = checkout.Items
+            .Select(x => x.MealId)
+            .ToList();
+
+        var meals = await _unitOfWork.Meals
+            .GetMealsByIdsAsync(mealIds);
+
+        if (meals.Count != mealIds.Count)
+            throw new Exception("Uno o más platillos no existen.");
+
         var order = new Nutria.Domain.Models.Order
         {
-            UserId = request.CheckoutRequest.UserId,
-            RestaurantId = request.CheckoutRequest.RestaurantId,
-            DeliveryAddress = request.CheckoutRequest.DeliveryAddress,
-            OrderStatus = "Pendiente", 
+            UserId = checkout.UserId,
+            RestaurantId = checkout.RestaurantId,
+            DeliveryAddress = checkout.DeliveryAddress,
+            OrderStatus = "Pendiente",
             OrderItems = new List<OrderItem>()
         };
 
         decimal totalAmount = 0;
 
-        // 2. Procesar cada ítem del carrito
-        foreach (var itemDto in request.CheckoutRequest.Items)
+        foreach (var item in checkout.Items)
         {
-            // Consultar el Meal a la BD para obtener el precio real y asegurar que pertenezca al restaurante
-            var meal = await _appdbContext.Meals.FirstOrDefaultAsync(m => m.Id == itemDto.MealId, cancellationToken: cancellationToken);
-            
-            if (meal == null)
-                throw new Exception($"El platillo con ID {itemDto.MealId} no existe.");
-            
-            if (meal.RestaurantId != request.CheckoutRequest.RestaurantId)
-                throw new Exception($"El platillo '{meal.Name}' no pertenece al restaurante seleccionado.");
+            var meal = meals.First(x => x.Id == item.MealId);
 
-            // Crear el OrderItem congelando el precio unitario
+            if (meal.RestaurantId != checkout.RestaurantId)
+                throw new Exception(
+                    $"El platillo '{meal.Name}' no pertenece al restaurante seleccionado.");
+
             var orderItem = new OrderItem
             {
                 MealId = meal.Id,
-                Quantity = itemDto.Quantity,
+                Quantity = item.Quantity,
                 UnitPrice = meal.Price
             };
 
             order.OrderItems.Add(orderItem);
-            
-            // Sumar al total
-            totalAmount += (meal.Price * itemDto.Quantity);
+
+            totalAmount += meal.Price * item.Quantity;
         }
 
         order.TotalAmount = totalAmount;
 
-        // 3. Persistencia utilizando Unit of Work
-        _unitOfWork.Repository<Nutria.Domain.Models.Order>().AddAsync(order);
+        await _unitOfWork.Orders.AddAsync(order);
+
         await _unitOfWork.SaveChanges();
 
-        // 4. Mapear y proyectar el resultado final al DTO usando LINQ
-        // Consultamos de nuevo usando Linq Projections para traer los nombres asociados sin cargar objetos circulares completos
-        var responseDto = await _appdbContext.Orders
-            .Include(o => o.Restaurant)
-            .Include(o => o.User)
-            .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Meal)
-            .Where(o => o.Id == order.Id)
-            .Select(o => new OrderResponse
-            {
-                Id = o.Id,
-                UserId = o.UserId,
-                UserName = o.User.FullName,
-                RestaurantId = o.RestaurantId,
-                RestaurantName = o.Restaurant.Name,
-                TotalAmount = o.TotalAmount,
-                OrderStatus = o.OrderStatus,
-                DeliveryAddress = o.DeliveryAddress,
-                CreatedAt = o.CreatedAt,
-                OrderItems = o.OrderItems.Select(oi => new OrderResponseItem
-                {
-                    Id = oi.Id,
-                    MealId = oi.MealId,
-                    MealName = oi.Meal.Name,
-                    Quantity = oi.Quantity,
-                    UnitPrice = oi.UnitPrice
-                }).ToList()
-            })
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+        var response = await _unitOfWork.Orders
+            .GetOrderResponseAsync(order.Id);
 
-        return responseDto ?? throw new Exception("Error al generar la respuesta del pedido.");
+        return response
+               ?? throw new Exception("No se pudo generar la orden.");
     }
 }
