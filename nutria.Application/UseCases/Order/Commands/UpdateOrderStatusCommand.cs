@@ -4,7 +4,10 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Order.Commands;
 
-public record UpdateOrderStatusCommand(Guid OrderId, string Status) : IRequest<bool>;
+public record UpdateOrderStatusCommand(
+    Guid OrderId,
+    string Status
+) : IRequest<bool>;
 
 public class UpdateOrderStatusCommandHandler
     : IRequestHandler<UpdateOrderStatusCommand, bool>
@@ -20,16 +23,14 @@ public class UpdateOrderStatusCommandHandler
         UpdateOrderStatusCommand request,
         CancellationToken cancellationToken)
     {
-        var order = await _unitOfWork
-            .Repository<Nutria.Domain.Models.Order>()
-            .GetByIdAsync(request.OrderId);
+        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId);
 
         if (order is null)
             return false;
 
         order.OrderStatus = request.Status;
 
-        _unitOfWork.Repository<Nutria.Domain.Models.Order>().Update(order);
+        _unitOfWork.Orders.Update(order);
 
         await _unitOfWork.SaveChanges();
 

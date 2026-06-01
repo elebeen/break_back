@@ -1,35 +1,29 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Nutria.Domain.Models;
-using Nutria.Infrastructure.Persistence.Context;
+﻿    using MediatR;
+    using Microsoft.EntityFrameworkCore;
+    using Nutria.Domain.Interfaces;
+    using Nutria.Domain.Models;
+    using Nutria.Infrastructure.Persistence.Context;
 
-namespace nutria.Application.UseCases.Order.Queries;
+    namespace nutria.Application.UseCases.Order.Queries;
 
-public record GetCompatibleMealsQuery(Guid UserId) : IRequest<List<Meal>>;
+    public record GetCompatibleMealsQuery(Guid UserId)
+        : IRequest<List<Meal>>;
 
-public class GetCompatibleMealsQueryHandler
-    : IRequestHandler<GetCompatibleMealsQuery,List<Meal>>
-{
-    private readonly AppdbContext _appdbContext;
-
-    public GetCompatibleMealsQueryHandler(AppdbContext appdbContext)
+    public class GetCompatibleMealsQueryHandler
+        : IRequestHandler<GetCompatibleMealsQuery, List<Meal>>
     {
-        _appdbContext = appdbContext;
-    }
+        private readonly IUnitOfWork _unitOfWork;
 
-    public async Task<List<Meal>> Handle(
-        GetCompatibleMealsQuery request,
-        CancellationToken cancellationToken)
-    {
-        var profile = await _appdbContext.HealthProfiles
-            .FirstOrDefaultAsync(
-                x => x.UserId == request.UserId,
-                cancellationToken);
+        public GetCompatibleMealsQueryHandler(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-        return await _appdbContext.Meals
-            .Include(x => x.NutritionalInfo)
-            .Where(x =>
-                x.NutritionalInfo!.Calories <= profile!.DailyCalorieTarget)
-            .ToListAsync(cancellationToken);
+        public async Task<List<Meal>> Handle(
+            GetCompatibleMealsQuery request,
+            CancellationToken cancellationToken)
+        {
+            return await _unitOfWork.Meals
+                .GetCompatibleMealsAsync(request.UserId);
+        }
     }
-}
