@@ -2,24 +2,31 @@
 using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace nutria.Application.UseCases.Auth.Commands;
 
 public record RegisterUserCommand(UserRegisterDto UserRegister) : IRequest<bool>;
 
-internal sealed record RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, bool>
+internal sealed record RegisterUserCommandHandler
+    : IRequestHandler<RegisterUserCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegisterUserCommandHandler(IUnitOfWork unitOfWork)
+    public RegisterUserCommandHandler(IUnitOfWork unitOfWork)   
     {
         _unitOfWork = unitOfWork;
     }
 
     public async Task<bool> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = _unitOfWork.Repository<User>().FindByName(request.UserRegister.Email);
-        if (existingUser != null) return false;
+        var existingUser = await _unitOfWork
+            .Repository<User>()
+            .Query()
+            .FirstOrDefaultAsync(x => x.Email == request.UserRegister.Email, cancellationToken);
+
+        if (existingUser != null)
+            return false;
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.UserRegister.Password);
 
@@ -27,10 +34,10 @@ internal sealed record RegisterUserCommandHandler : IRequestHandler<RegisterUser
         {
             FullName = request.UserRegister.FullName,
             Email = request.UserRegister.Email,
-            PasswordHash = passwordHash,
+            PasswordHash = passwordHash
         };
 
-        _unitOfWork.Repository<User>().Add(newUser);
+        await _unitOfWork.Repository<User>().AddAsync(newUser);
         await _unitOfWork.SaveChanges();
 
         return true;

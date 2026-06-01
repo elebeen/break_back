@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Order.Commands;
 
@@ -19,13 +20,16 @@ public class UpdateOrderStatusCommandHandler
         UpdateOrderStatusCommand request,
         CancellationToken cancellationToken)
     {
-        var order = _unitOfWork.Repository<Order>()
-            .FindbyGuid(request.OrderId);
+        var order = await _unitOfWork
+            .Repository<Nutria.Domain.Models.Order>()
+            .GetByIdAsync(request.OrderId);
 
-        if (order == null)
+        if (order is null)
             return false;
 
         order.OrderStatus = request.Status;
+
+        _unitOfWork.Repository<Nutria.Domain.Models.Order>().Update(order);
 
         await _unitOfWork.SaveChanges();
 

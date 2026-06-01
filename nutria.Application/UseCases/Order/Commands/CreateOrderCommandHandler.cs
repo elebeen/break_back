@@ -4,6 +4,7 @@ using Nutria.Domain.Dtos.Checkout;
 using Nutria.Domain.Dtos.Order;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
 
 
 namespace nutria.Application.UseCases.Order.Commands;
@@ -27,7 +28,7 @@ internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCom
             throw new ArgumentException("El carrito no puede estar vacío.");
 
         // 1. Instanciar la orden base (entidad de persistencia)
-        var order = new Order
+        var order = new Nutria.Domain.Models.Order
         {
             UserId = request.CheckoutRequest.UserId,
             RestaurantId = request.CheckoutRequest.RestaurantId,
@@ -67,7 +68,7 @@ internal sealed class CreateOrderCommandHandler : IRequestHandler<CreateOrderCom
         order.TotalAmount = totalAmount;
 
         // 3. Persistencia utilizando Unit of Work
-        _unitOfWork.Repository<Order>().Add(order);
+        _unitOfWork.Repository<Nutria.Domain.Models.Order>().AddAsync(order);
         await _unitOfWork.SaveChanges();
 
         // 4. Mapear y proyectar el resultado final al DTO usando LINQ

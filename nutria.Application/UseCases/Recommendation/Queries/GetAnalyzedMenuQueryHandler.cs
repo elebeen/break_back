@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
+
 
 namespace nutria.Application.UseCases.Recommendation.Queries;
 

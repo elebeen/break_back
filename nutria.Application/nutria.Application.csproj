@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Nutria.Domain\Nutria.Domain.csproj" />
+      <ProjectReference Include="..\Nutria.Infrastructure\Nutria.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>

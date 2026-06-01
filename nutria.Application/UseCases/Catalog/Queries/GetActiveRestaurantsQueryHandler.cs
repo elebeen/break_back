@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.Restaurant;
 using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Catalog.Queries;
 

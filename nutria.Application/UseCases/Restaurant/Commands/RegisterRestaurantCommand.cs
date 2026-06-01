@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurant.Commands;
 
@@ -23,7 +24,7 @@ public class RegisterRestaurantCommandHandler
         RegisterRestaurantCommand request,
         CancellationToken cancellationToken)
     {
-        var restaurant = new Restaurant
+        var restaurant = new Nutria.Domain.Models.Restaurant
         {
             Name = request.Name,
             Address = request.Address,
@@ -31,7 +32,7 @@ public class RegisterRestaurantCommandHandler
             IsActive = true
         };
 
-        _unitOfWork.Repository<Restaurant>().Add(restaurant);
+        _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().AddAsync(restaurant);
 
         await _unitOfWork.SaveChanges();
 
