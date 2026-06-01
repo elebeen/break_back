@@ -20,10 +20,7 @@ internal sealed record RegisterUserCommandHandler
 
     public async Task<bool> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _unitOfWork
-            .Repository<User>()
-            .Query()
-            .FirstOrDefaultAsync(x => x.Email == request.UserRegister.Email, cancellationToken);
+        var existingUser = await  _unitOfWork.Repository<User>().FindFirstAsync(u => u.Email == request.UserRegister.Email);
 
         if (existingUser != null)
             return false;

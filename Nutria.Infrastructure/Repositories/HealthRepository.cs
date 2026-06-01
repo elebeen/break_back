@@ -16,7 +16,7 @@ public class HealthRepository : IHealthRepository
         _appdbContext = appdbContext;
     }
 
-    public async  Task<UserHealthProfileDto?> GetUserHealthData(Guid userId)
+    public async Task<UserHealthProfileDto?> GetUserHealthData(Guid userId)
     {   
         return await _appdbContext.Users
             .AsNoTracking()
@@ -57,7 +57,6 @@ public class HealthRepository : IHealthRepository
                 Id = c.Id,
                 Name = c.Name,
                 Type = c.Type,
-                // Agrega más campos según tu entidad
             })
             .ToListAsync();
     }
@@ -78,7 +77,7 @@ public class HealthRepository : IHealthRepository
                 .Where(c => c.Id == conditionId))   // Solo cargamos la que queremos
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user?.Conditions.Any() == true)
+        if (user != null && user.Conditions.Count != 0)
         {
             var condition = user.Conditions.First();
             user.Conditions.Remove(condition);

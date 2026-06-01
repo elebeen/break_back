@@ -17,20 +17,13 @@ internal sealed record AddMedicalConditionCommandHandler
 
     public async Task<Unit> Handle(AddMedicalConditionCommand request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork
-            .Repository<User>()
-            .GetByIdAsync(request.UserId);
+        var user = await _unitOfWork.Repository<User>().FindFirstAsync(u => u.Id == request.UserId);
 
-        var condition = await _unitOfWork
-            .Repository<MedicalCondition>()
-            .Query()
-            .FirstOrDefaultAsync(x => x.Id == request.ConditionId, cancellationToken);
+        var condition = await _unitOfWork.Repository<MedicalCondition>().FindFirstAsync(m => m.Id == request.ConditionId);
 
-        if (user != null && condition != null)
-        {
-            user.Conditions.Add(condition);
-            await _unitOfWork.SaveChanges();
-        }
+        if (user == null || condition == null) return Unit.Value;
+        user.Conditions.Add(condition);
+        await _unitOfWork.SaveChanges();
 
         return Unit.Value;
     }
