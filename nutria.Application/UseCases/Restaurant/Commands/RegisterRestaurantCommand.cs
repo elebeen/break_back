@@ -10,8 +10,7 @@ public record RegisterRestaurantCommand(
     string Phone
 ) : IRequest<Guid>;
 
-public class RegisterRestaurantCommandHandler
-    : IRequestHandler<RegisterRestaurantCommand, Guid>
+public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaurantCommand, Guid>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -20,20 +19,19 @@ public class RegisterRestaurantCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(
-        RegisterRestaurantCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Guid> Handle(RegisterRestaurantCommand request, CancellationToken cancellationToken)
     {
         var restaurant = new Nutria.Domain.Models.Restaurant
         {
+            Id = Guid.NewGuid(),
             Name = request.Name,
             Address = request.Address,
             ContactPhone = request.Phone,
             IsActive = true
         };
 
-        _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().AddAsync(restaurant);
-
+        await _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().AddAsync(restaurant);
+        
         await _unitOfWork.SaveChanges();
 
         return restaurant.Id;
