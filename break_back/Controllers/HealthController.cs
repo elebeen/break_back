@@ -26,8 +26,9 @@ public class HealthController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> UpdateProfile(UpdateHealthProfileCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        await _mediator.Send(command);
+
+        return NoContent();
     }
 
     [HttpPost("conditions/{conditionId}")]

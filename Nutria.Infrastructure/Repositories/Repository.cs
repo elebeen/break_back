@@ -22,7 +22,6 @@ public class Repository<TEntity> : IRepository<TEntity>
 
     public async Task<TEntity?> FindFirstAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        // Esto permite buscar por CUALQUIER propiedad dinámicamente
         return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
     }
 
@@ -31,11 +30,16 @@ public class Repository<TEntity> : IRepository<TEntity>
         await _context.Set<TEntity>().AddAsync(entity);
     }
 
-    public async Task Update(TEntity entity)
+    public async Task UpdateAsync(TEntity entity)
     {
         _context.Set<TEntity>().Update(entity);
     }
-
+    
+    public void Update(TEntity entity)
+    {
+        _context.Set<TEntity>().Update(entity);
+    }
+    
     public void Delete(TEntity entity)
     {
         _context.Set<TEntity>().Remove(entity);

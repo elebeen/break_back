@@ -17,15 +17,13 @@ public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRest
 
     public async Task<bool> Handle(DeactivateRestaurantCommand request, CancellationToken cancellationToken)
     {
-        // Buscamos el restaurante en el repositorio genérico usando su ID
         var restaurant = await _unitOfWork.Repository<Restaurant>().FindFirstAsync(r => r.Id == request.RestaurantId);
         
         if (restaurant == null) return false;
 
         restaurant.IsActive = false;
-
-        // Actualizamos la entidad en el contexto
-        await _unitOfWork.Repository<Restaurant>().Update(restaurant);
+        
+        await _unitOfWork.Repository<Restaurant>().UpdateAsync(restaurant);
         
         await _unitOfWork.SaveChanges();
 

@@ -17,13 +17,17 @@ public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealComman
 
     public async Task<bool> Handle(DeactivateMealCommand request, CancellationToken cancellationToken)
     {
-        var meal = await _unitOfWork.Repository<Meal>()
-            .FindFirstAsync(x => x.Id == request.MealId);
-        
-        if (meal == null) return false;
+        var repository = _unitOfWork.Repository<Meal>();
 
-        await _unitOfWork.Repository<Meal>().Update(meal);
-        
+        var meal = await repository.FindFirstAsync(x => x.Id == request.MealId);
+
+        if (meal is null)
+            return false;
+
+        meal.IsActive = false;
+
+        await repository.UpdateAsync(meal);
+
         await _unitOfWork.SaveChanges();
 
         return true;

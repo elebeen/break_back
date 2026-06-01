@@ -11,7 +11,8 @@ public record UpdateMealNutritionalInfoCommand(
     int NewSugarG
 ) : IRequest<bool>;
 
-public class UpdateMealNutritionalInfoCommandHandler : IRequestHandler<UpdateMealNutritionalInfoCommand, bool>
+public class UpdateMealNutritionalInfoCommandHandler
+    : IRequestHandler<UpdateMealNutritionalInfoCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -20,35 +21,40 @@ public class UpdateMealNutritionalInfoCommandHandler : IRequestHandler<UpdateMea
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(UpdateMealNutritionalInfoCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(
+        UpdateMealNutritionalInfoCommand request,
+        CancellationToken cancellationToken)
     {
-        // Buscamos el plato usando el método GetByIdAsync de tu IRepository
-        var meal = await _unitOfWork.Repository<Meal>().FindFirstAsync(u => u.Id == request.MealId);
-        
-        if (meal == null) return false;
+        var repository = _unitOfWork.Repository<Meal>();
 
-        // Si el plato no tiene inicializada la info nutricional, la creamos; si ya existe, la actualizamos
-        if (meal.NutritionalInfo == null)
-        {
-            meal.NutritionalInfo = new NutritionalInfo
-            {
-                Id = Guid.NewGuid(),
-                Calories = request.NewCalories,
-                SodiumMg = request.NewSodiumMg,
-                SugarG = request.NewSugarG
-            };
-        }
-        else
-        {
-            meal.NutritionalInfo.Calories = request.NewCalories;
-            meal.NutritionalInfo.SodiumMg = request.NewSodiumMg;
-            meal.NutritionalInfo.SugarG = request.NewSugarG;
-        }
+        var meal = await repository.FindFirstAsync(x => x.Id == request.MealId);
 
-        _unitOfWork.Repository<Meal>().Update(meal);
-        
+        if (meal is null)
+            return false;
+
+        UpdateNutritionalInfo(meal, request);
+
+        await repository.UpdateAsync(meal);
+
         await _unitOfWork.SaveChanges();
 
         return true;
+    }
+
+    private static void UpdateNutritionalInfo(
+        Meal meal,
+        UpdateMealNutritionalInfoCommand request)
+    {
+        if (meal.NutritionalInfo is null)
+        {
+            meal.NutritionalInfo = new NutritionalInfo
+            {
+                Id = Guid.NewGuid()
+            };
+        }
+
+        meal.NutritionalInfo.Calories = request.NewCalories;
+        meal.NutritionalInfo.SodiumMg = request.NewSodiumMg;
+        meal.NutritionalInfo.SugarG = request.NewSugarG;
     }
 }

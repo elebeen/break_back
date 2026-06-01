@@ -24,7 +24,7 @@ public class HealthRepository : IHealthRepository
             .Select(u => new UserHealthProfileDto
             {
                 UserId = u.Id,
-                FullName = u.FullName,        // o u.Name + u.LastName
+                FullName = u.FullName,
 
                 HealthProfile = u.HealthProfile != null ? new HealthProfileGetDto
                 {
@@ -66,7 +66,7 @@ public class HealthRepository : IHealthRepository
         return await _appdbContext.Users
             .AsNoTracking()
             .Where(u => u.Id == userId)
-            .SelectMany(u => u.Conditions)           // Navega a través de la tabla intermedia
+            .SelectMany(u => u.Conditions)
             .FirstOrDefaultAsync(c => c.Id == conditionId);
     }
     
@@ -74,7 +74,7 @@ public class HealthRepository : IHealthRepository
     {
         var user = await _appdbContext.Users
             .Include(u => u.Conditions
-                .Where(c => c.Id == conditionId))   // Solo cargamos la que queremos
+                .Where(c => c.Id == conditionId))
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user != null && user.Conditions.Count != 0)

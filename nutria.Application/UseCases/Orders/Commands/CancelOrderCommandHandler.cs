@@ -25,7 +25,7 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
 
         order.OrderStatus = "Cancelado";
 
-        await _unitOfWork.Orders.Update(order);
+        await _unitOfWork.Orders.UpdateAsync(order);
 
         await _unitOfWork.SaveChanges();
 
