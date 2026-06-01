@@ -8,7 +8,7 @@ public interface IUserRepository
 
     Task<User?> GetUserWithHealthProfileAsync(Guid userId);
 
-    Task<User?> GetUserWithConditionsAsync(Guid userId);
+    Task<User?> GetUserWithConditionsAsync(Guid userId, int conditionId);
 
     Task<bool> ExistsByEmailAsync(string email);
 }

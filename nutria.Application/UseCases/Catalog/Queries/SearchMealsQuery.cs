@@ -22,6 +22,7 @@ public class SearchMealsQueryHandler
         SearchMealsQuery request,
         CancellationToken cancellationToken)
     {
+        /* consulta pendiente para que el buscador sea global*/
         return await _appdbContext.Meals
             .AsNoTracking()
             .Where(x => x.Name.ToLower()

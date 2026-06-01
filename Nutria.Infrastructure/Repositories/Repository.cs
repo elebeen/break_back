@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces;
 using Nutria.Infrastructure.Persistence.Context;
 
@@ -19,9 +20,10 @@ public class Repository<TEntity> : IRepository<TEntity>
         return await _context.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity?> GetByIdAsync(Guid id)
+    public async Task<TEntity?> FindFirstAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        return await _context.Set<TEntity>().FindAsync(id);
+        // Esto permite buscar por CUALQUIER propiedad dinámicamente
+        return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
     }
 
     public async Task AddAsync(TEntity entity)
@@ -29,7 +31,7 @@ public class Repository<TEntity> : IRepository<TEntity>
         await _context.Set<TEntity>().AddAsync(entity);
     }
 
-    public void Update(TEntity entity)
+    public async Task Update(TEntity entity)
     {
         _context.Set<TEntity>().Update(entity);
     }

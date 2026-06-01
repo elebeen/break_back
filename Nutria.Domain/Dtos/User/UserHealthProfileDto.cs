@@ -12,5 +12,5 @@ public class UserHealthProfileDto
     public HealthProfileGetDto? HealthProfile { get; set; }
 
     // Condiciones médicas
-    public List<MedicalConditionGetDto> Conditions { get; set; } = new();
+    public List<MedicalConditionGetDto> Conditions { get; set; } = [];
 }

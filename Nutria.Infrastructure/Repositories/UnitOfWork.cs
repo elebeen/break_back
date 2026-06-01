@@ -11,15 +11,10 @@ public class UnitOfWork : IUnitOfWork
     private readonly AppdbContext _appdbContext;
     
     public IUserRepository Users { get; }
-
     public IMealRepository Meals { get; }
-
     public IOrderRepository Orders { get; }
-
     public IRestaurantRepository Restaurants { get; }
-
     public IHealthRepository Health { get; }
-
     public IMedicalConditionRepository MedicalConditions { get; }
     
     public UnitOfWork(
@@ -32,19 +27,12 @@ public class UnitOfWork : IUnitOfWork
         IMedicalConditionRepository medicalConditionRepository)
     {
         _appdbContext = appdbContext;
-
         _repositories = new Hashtable();
-
         Users = userRepository;
-
         Meals = mealRepository;
-
         Orders = orderRepository;
-
         Restaurants = restaurantRepository;
-
         Health = healthRepository;
-
         MedicalConditions = medicalConditionRepository;
     }
 
