@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using break_back.Services;
+using MediatR;
+using nutria.Application.UseCases.Catalog.Queries;
+using nutria.Application.UseCases.Restaurants.Queries;
 
 namespace break_back.Controllers;
 
@@ -7,32 +9,31 @@ namespace break_back.Controllers;
 [Route("[controller]")]
 public class CatalogController : ControllerBase
 {
-    private readonly ICatalogService _catalogService;
+    private readonly IMediator _mediator;
 
-    public CatalogController(ICatalogService catalogService)
+    public CatalogController(IMediator mediator)
     {
-        _catalogService = catalogService;
+        _mediator = mediator;
     }
 
     [HttpGet("restaurants")]
-    public async Task<IActionResult> GetRestaurants()
+    public async Task<IActionResult> GetAllRestaurants(GetAllRestaurantsQuery query)
     {
-        var restaurants = await _catalogService.GetActiveRestaurants();
-        return Ok(restaurants);
+        var res = await _mediator.Send(query);
+        return Ok(res);
     }
 
-    [HttpGet("restaurants/{id}/menu")]
-    public async Task<IActionResult> GetMenu(Guid id)
+    [HttpGet("restaurants/menu")]
+    public async Task<IActionResult> GetMenu(GetMenuByRestaurantQuery query)
     {
-        var menu = await _catalogService.GetMenuByRestaurant(id);
+        var menu = await _mediator.Send(query);
         return Ok(menu);
     }
 
-    [HttpGet("meals/{id}")]
-    public async Task<IActionResult> GetMeal(Guid id)
+    [HttpGet("meals/{query}")]
+    public async Task<IActionResult> GetMeal(GetMealDetailsQuery query)
     {
-        var meal = await _catalogService.GetMealDetails(id);
-        if (meal == null) return NotFound();
+        var meal = await _mediator.Send(query);
         return Ok(meal);
     }
 }
