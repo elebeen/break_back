@@ -1,5 +1,6 @@
-﻿using break_back.Services;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using nutria.Application.UseCases.Recommendation.Queries;
 
 namespace break_back.Controllers;
 
@@ -7,17 +8,17 @@ namespace break_back.Controllers;
 [Route("[controller]")]
 public class RecommendationController : ControllerBase
 {
-    private readonly IRecommendationService _recommendationService;
+    private readonly IMediator _mediator;
 
-    public RecommendationController(IRecommendationService recommendationService)
+    public RecommendationController(IMediator mediator)
     {
-        _recommendationService = recommendationService;
+        _mediator = mediator;
     }
     
     [HttpGet("/{userId}/")]
-    public async Task<IActionResult> GetSmartMenu(Guid userId)
+    public async Task<IActionResult> GetSmartMenu(GetAnalyzedMenuQuery query)
     {
-        var menu = await _recommendationService.GetAnalyzedMenu(userId);
+        var menu = await _mediator.Send(query);
         return Ok(menu);
     }
 }

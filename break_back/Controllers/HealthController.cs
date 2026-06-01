@@ -1,6 +1,7 @@
-using break_back.Services;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Nutria.Domain.Dtos.HealthProfile;
+using nutria.Application.UseCases.Health.Commands;
+using nutria.Application.UseCases.Health.Queries;
 using Nutria.Domain.Dtos.User;
 
 namespace break_back.Controllers;
@@ -9,37 +10,37 @@ namespace break_back.Controllers;
 [Route("[controller]")]
 public class HealthController : ControllerBase
 {
-    private readonly IHealthService _healthService;
+    private readonly IMediator _mediator;
 
-    public HealthController(IHealthService healthService)
+    public HealthController(IMediator mediator)
     {
-        _healthService = healthService;
+        _mediator = mediator;
     }
 
     [HttpGet("/profile/{userId}")]
-    public async Task<UserHealthProfileDto> GetProfile(Guid userId)
+    public async Task<UserHealthProfileDto> GetProfile(GetUserProfileQuery query)
     {
-        return await _healthService.GetProfile(userId);
+        return await _mediator.Send(query);
     }
     
     [HttpPost]
-    public async Task<IActionResult> UpdateProfile(HealthProfileCreateDto profile)
+    public async Task<IActionResult> UpdateProfile(UpdateHealthProfileCommand command)
     {
-        var result = await _healthService.UpdateProfile(profile.UserId, profile);
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 
     [HttpPost("conditions/{conditionId}")]
-    public async Task<IActionResult> AddCondition(Guid userId, int conditionId)
+    public async Task<IActionResult> AddCondition(AddMedicalConditionCommand command)
     {
-        await _healthService.AddConditionToUser(userId, conditionId);
+        await _mediator.Send(command);
         return Ok(new { message = "Condición añadida correctamente" });
     }
 
     [HttpDelete("/{userId}/")]
-    public async Task<IActionResult> RemoveCondition(Guid userId, int conditionId)
+    public async Task<IActionResult> RemoveCondition(RemoveMedicalConditionCommand command)
     {
-        await _healthService.RemoveConditionFromUser(userId, conditionId);
+        await _mediator.Send(command);
         return Ok( new { message = "Condición eliminda correctamente"});
     }
 }
