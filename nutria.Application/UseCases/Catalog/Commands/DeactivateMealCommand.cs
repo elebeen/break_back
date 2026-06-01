@@ -17,12 +17,12 @@ public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealComman
 
     public async Task<bool> Handle(DeactivateMealCommand request, CancellationToken cancellationToken)
     {
-        // Buscamos el plato en el repositorio genérico usando su ID
-        var meal = await _unitOfWork.Repository<Meal>().GetByIdAsync(request.MealId);
+        var meal = await _unitOfWork.Repository<Meal>()
+            .FindFirstAsync(x => x.Id == request.MealId);
         
         if (meal == null) return false;
 
-        _unitOfWork.Repository<Meal>().Update(meal);
+        await _unitOfWork.Repository<Meal>().Update(meal);
         
         await _unitOfWork.SaveChanges();
 

@@ -19,18 +19,17 @@ public class UpdateOrderStatusCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(
-        UpdateOrderStatusCommand request,
-        CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
     {
-        var order = await _unitOfWork.Orders.GetByIdAsync(request.OrderId);
+        var order = await _unitOfWork.Repository<Nutria.Domain.Models.Order>()
+            .FindFirstAsync(x => x.Id == request.OrderId);
 
-        if (order is null)
+        if (order == null)
             return false;
 
         order.OrderStatus = request.Status;
 
-        _unitOfWork.Orders.Update(order);
+        await _unitOfWork.Repository<Nutria.Domain.Models.Order>().Update(order);
 
         await _unitOfWork.SaveChanges();
 

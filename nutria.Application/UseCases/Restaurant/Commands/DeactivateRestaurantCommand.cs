@@ -19,15 +19,14 @@ public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRest
 
     public async Task<bool> Handle(DeactivateRestaurantCommand request, CancellationToken cancellationToken)
     {
-        // Buscamos el restaurante en el repositorio genérico usando su ID
-        var restaurant = await _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().GetByIdAsync(request.RestaurantId);
+        var restaurant = await _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>()
+            .FindFirstAsync(x => x.Id == request.RestaurantId);
         
         if (restaurant == null) return false;
 
         restaurant.IsActive = false;
 
-        // Actualizamos la entidad en el contexto
-        _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().Update(restaurant);
+        await _unitOfWork.Repository<Nutria.Domain.Models.Restaurant>().Update(restaurant);
         
         await _unitOfWork.SaveChanges();
 
