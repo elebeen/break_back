@@ -62,7 +62,9 @@ public class MealRepository : Repository<Meal>, IMealRepository
             .Where(m =>
                 conditionType == "Diabetes"
                     ? m.NutritionalInfo!.SugarG < 10
-                    : conditionType != "Hypertension" || m.NutritionalInfo!.SodiumMg < 500)
+                    : conditionType == "Hypertension"
+                        ? m.NutritionalInfo!.SodiumMg < 500
+                        : true)
             .ToListAsync();
     }
 
@@ -98,4 +100,28 @@ public class MealRepository : Repository<Meal>, IMealRepository
                 }).ToList()
             }).FirstOrDefaultAsync();
     }
+    
+    public async Task<List<Meal>> GetMealsByIdsAsync(List<Guid> mealIds)
+    {
+        return await _context.Meals
+            .Where(x => mealIds.Contains(x.Id))
+            .ToListAsync();
+    }
+    
+    public async Task<List<Meal>> GetCompatibleMealsAsync(Guid userId)
+    {
+        var profile = await _context.HealthProfiles
+            .FirstOrDefaultAsync(x => x.UserId == userId);
+
+        if (profile is null)
+            return new List<Meal>();
+
+        return await _context.Meals
+            .AsNoTracking()
+            .Include(x => x.NutritionalInfo)
+            .Where(x =>
+                x.NutritionalInfo.Calories <= profile.DailyCalorieTarget)
+            .ToListAsync();
+    }
+    
 }
