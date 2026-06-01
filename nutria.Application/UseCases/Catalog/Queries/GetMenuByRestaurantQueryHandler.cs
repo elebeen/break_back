@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Dtos.NutritionalInfo;
 using Nutria.Domain.Models;
+using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Catalog.Queries;
 
