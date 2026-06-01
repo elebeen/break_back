@@ -1,16 +1,16 @@
-﻿using MediatR;
+using MediatR;
 using Nutria.Domain.Dtos.HealthProfile;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
-public record UpdateHealthProfileCommand(Guid UserId, HealthProfileCreateDto ProfileData) : IRequest<bool>;
+public record CreateHealthProfileCommand(Guid UserId, HealthProfileCreateDto ProfileData) : IRequest<bool>;
 
-internal sealed record UpdateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, bool>
+internal sealed record CreateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, bool>
 {
     private readonly IUnitOfWork _unitOfWork;
-    public UpdateHealthProfileCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+    public CreateHealthProfileCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
     public async Task<bool> Handle(UpdateHealthProfileCommand request, CancellationToken cancellationToken)
     {
@@ -23,7 +23,7 @@ internal sealed record UpdateHealthProfileCommandHandler : IRequestHandler<Updat
             DailySugarLimitG = request.ProfileData.DailySugarLimitG,
         };
 
-        await _unitOfWork.Repository<HealthProfile>().Update(newProfile);
+        await _unitOfWork.Repository<HealthProfile>().AddAsync(newProfile);
         await _unitOfWork.SaveChanges();
 
         return true;

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.Restaurant;
+using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 using Nutria.Infrastructure.Persistence.Context;
 
@@ -10,21 +11,12 @@ public record GetActiveRestaurantsQuery : IRequest<IEnumerable<RestaurantDto>>;
 
 internal sealed record GetActiveRestaurantsQueryHandler : IRequestHandler<GetActiveRestaurantsQuery, IEnumerable<RestaurantDto>>
 {
-    private readonly AppdbContext _appdbContext;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetActiveRestaurantsQueryHandler(AppdbContext appdbContext) => _appdbContext = appdbContext;
+    public GetActiveRestaurantsQueryHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
     public async Task<IEnumerable<RestaurantDto>> Handle(GetActiveRestaurantsQuery request, CancellationToken cancellationToken)
     {
-        return await _appdbContext.Restaurants
-            .AsNoTracking()
-            .Where(r => r.IsActive == true)
-            .Select(r => new RestaurantDto
-            {
-                Name = r.Name,
-                Address = r.Address,
-                ContactPhone = r.ContactPhone,
-                IsActive = r.IsActive
-            }).ToListAsync(cancellationToken);
+        return await _unitOfWork.Restaurants.GetActiveRestaurantsAsync();
     }
 }
