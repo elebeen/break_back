@@ -30,7 +30,7 @@ public class UpdateOrderStatusCommandHandler
 
         order.OrderStatus = request.Status;
 
-        await _unitOfWork.Orders.Update(order);
+        await _unitOfWork.Orders.UpdateAsync(order);
 
         await _unitOfWork.SaveChanges();
 

@@ -1,9 +1,6 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Interfaces;
-using Nutria.Domain.Models;
-using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Health.Queries;
 

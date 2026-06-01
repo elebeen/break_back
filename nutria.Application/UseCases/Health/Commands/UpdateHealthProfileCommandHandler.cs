@@ -5,27 +5,34 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
-public record UpdateHealthProfileCommand(Guid UserId, HealthProfileCreateDto ProfileData) : IRequest<bool>;
+public record UpdateHealthProfileCommand(
+    Guid UserId,
+    HealthProfileCreateDto ProfileData
+) : IRequest;
 
-internal sealed record UpdateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, bool>
+internal sealed class UpdateHealthProfileCommandHandler
+    : IRequestHandler<UpdateHealthProfileCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
-    public UpdateHealthProfileCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<bool> Handle(UpdateHealthProfileCommand request, CancellationToken cancellationToken)
+    public UpdateHealthProfileCommandHandler(IUnitOfWork unitOfWork)
     {
-        var newProfile = new HealthProfile
-        {
-            UserId = request.UserId,
-            Goal = request.ProfileData.Goal,
-            DailyCalorieTarget = request.ProfileData.DailyCalorieTarget,
-            DailySodiumLimitMg = request.ProfileData.DailySodiumLimitMg,
-            DailySugarLimitG = request.ProfileData.DailySugarLimitG,
-        };
+        _unitOfWork = unitOfWork;
+    }
 
-        await _unitOfWork.Repository<HealthProfile>().Update(newProfile);
+    public async Task Handle(UpdateHealthProfileCommand request, CancellationToken cancellationToken)
+    {
+        var profile = await _unitOfWork.Repository<HealthProfile>()
+            .FindFirstAsync(h => h.UserId == request.UserId);
+
+        if (profile is null)
+            throw new Exception("Health profile not found.");
+
+        profile.Goal = request.ProfileData.Goal;
+        profile.DailyCalorieTarget = request.ProfileData.DailyCalorieTarget;
+        profile.DailySodiumLimitMg = request.ProfileData.DailySodiumLimitMg;
+        profile.DailySugarLimitG = request.ProfileData.DailySugarLimitG;
+
         await _unitOfWork.SaveChanges();
-
-        return true;
     }
 }

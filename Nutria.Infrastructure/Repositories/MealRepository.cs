@@ -169,7 +169,10 @@ public class MealRepository : Repository<Meal>, IMealRepository
                 dto.ExceedsSodiumLimit = dailySodiumLimit > 0 && m.NutritionalInfo.SodiumMg > dailySodiumLimit;
             }
 
-            foreach (var condition in userConditions.Where(condition => m.Allergens.Any(a => condition.Contains(a) || a.Contains(condition))))
+            foreach (var condition in userConditions
+                         .Where(condition => m.Allergens
+                             .Any(a => condition
+                                 .Contains(a) || a.Contains(condition))))
             {
                 dto.HasAllergenWarning = true;
                 dto.SpecificWarnings.Add($"Contiene ingredientes relacionados con: {condition}");
@@ -178,6 +181,14 @@ public class MealRepository : Repository<Meal>, IMealRepository
         }
 
         return result;
+    }
+    
+    public async Task<List<Meal>> SearchMealsByNameAsync(string name)
+    {
+        return await _context.Meals
+            .AsNoTracking()
+            .Where(x => x.Name.ToLower().Contains(name.ToLower()))
+            .ToListAsync();
     }
     
 }

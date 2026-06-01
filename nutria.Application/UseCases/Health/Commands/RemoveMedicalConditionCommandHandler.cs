@@ -3,9 +3,13 @@ using Nutria.Domain.Interfaces;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
-public record RemoveMedicalConditionCommand(Guid UserId, int ConditionId) : IRequest<Unit>;
+public record RemoveMedicalConditionCommand(
+    Guid UserId,
+    int ConditionId
+) : IRequest;
 
-internal sealed record RemoveMedicalConditionCommandHandler : IRequestHandler<RemoveMedicalConditionCommand, Unit>
+internal sealed class RemoveMedicalConditionCommandHandler
+    : IRequestHandler<RemoveMedicalConditionCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -14,11 +18,17 @@ internal sealed record RemoveMedicalConditionCommandHandler : IRequestHandler<Re
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(RemoveMedicalConditionCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveMedicalConditionCommand request, CancellationToken cancellationToken)
     {
-        await _unitOfWork.Health.RemoveConditionFromUser(request.UserId, request.ConditionId);
-        await _unitOfWork.SaveChanges();
+        var condition = await _unitOfWork.Health
+            .GetConditionByUserId(request.UserId, request.ConditionId);
 
-        return Unit.Value;
+        if (condition is null)
+            return;
+
+        await _unitOfWork.Health
+            .RemoveConditionFromUser(request.UserId, request.ConditionId);
+
+        await _unitOfWork.SaveChanges();
     }
 }

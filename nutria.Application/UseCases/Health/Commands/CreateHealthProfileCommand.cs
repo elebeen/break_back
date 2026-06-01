@@ -5,27 +5,41 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
-public record CreateHealthProfileCommand(Guid UserId, HealthProfileCreateDto ProfileData) : IRequest<bool>;
+public record CreateHealthProfileCommand(
+    Guid UserId,
+    HealthProfileCreateDto ProfileData
+) : IRequest;
 
-internal sealed record CreateHealthProfileCommandHandler : IRequestHandler<UpdateHealthProfileCommand, bool>
+internal sealed class CreateHealthProfileCommandHandler
+    : IRequestHandler<CreateHealthProfileCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
-    public CreateHealthProfileCommandHandler(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public async Task<bool> Handle(UpdateHealthProfileCommand request, CancellationToken cancellationToken)
+    public CreateHealthProfileCommandHandler(IUnitOfWork unitOfWork)
     {
-        var newProfile = new HealthProfile
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task Handle(CreateHealthProfileCommand request, CancellationToken cancellationToken)
+    {
+        var existingProfile = await _unitOfWork.Repository<HealthProfile>()
+            .FindFirstAsync(h => h.UserId == request.UserId);
+
+        if (existingProfile is not null)
+            throw new Exception("Health profile already exists.");
+
+        var profile = new HealthProfile
         {
             UserId = request.UserId,
             Goal = request.ProfileData.Goal,
             DailyCalorieTarget = request.ProfileData.DailyCalorieTarget,
             DailySodiumLimitMg = request.ProfileData.DailySodiumLimitMg,
-            DailySugarLimitG = request.ProfileData.DailySugarLimitG,
+            DailySugarLimitG = request.ProfileData.DailySugarLimitG
         };
 
-        await _unitOfWork.Repository<HealthProfile>().AddAsync(newProfile);
-        await _unitOfWork.SaveChanges();
+        await _unitOfWork.Repository<HealthProfile>()
+            .AddAsync(profile);
 
-        return true;
+        await _unitOfWork.SaveChanges();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
-using Nutria.Infrastructure.Persistence.Context;
 
 namespace nutria.Application.UseCases.Catalog.Queries;
 
@@ -9,24 +8,19 @@ public record SearchMealsQuery(string Name)
     : IRequest<List<Meal>>;
 
 public class SearchMealsQueryHandler
-    : IRequestHandler<SearchMealsQuery,List<Meal>>
+    : IRequestHandler<SearchMealsQuery, List<Meal>>
 {
-    private readonly AppdbContext _appdbContext;
+    private readonly IMealRepository _mealRepository;
 
-    public SearchMealsQueryHandler(AppdbContext appdbContext)
+    public SearchMealsQueryHandler(IMealRepository mealRepository)
     {
-        _appdbContext = appdbContext;
+        _mealRepository = mealRepository;
     }
 
     public async Task<List<Meal>> Handle(
         SearchMealsQuery request,
         CancellationToken cancellationToken)
     {
-        /* consulta pendiente para que el buscador sea global*/
-        return await _appdbContext.Meals
-            .AsNoTracking()
-            .Where(x => x.Name.ToLower()
-                .Contains(request.Name.ToLower()))
-            .ToListAsync(cancellationToken);
+        return await _mealRepository.SearchMealsByNameAsync(request.Name);
     }
 }
