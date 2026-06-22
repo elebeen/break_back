@@ -18,14 +18,16 @@ public static class InfrastructureServices
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             options.UseNpgsql(connectionString);
         });
-
-        //ServicesRegister
-        //services.AddTransient<IUnitOfWork, UnitOfWork>();
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IMealRepository, MealRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+        services.AddScoped<IHealthRepository, HealthRepository>();
+        services.AddScoped<IMedicalConditionRepository, MedicalConditionRepository>();
         services.AddScoped<IJwtService, JwtService>();
-        //services.AddScoped<IFileService, FileService>();
-        //services.AddScoped<IUploadFileToAzureStorageService, UploadFileToAzureStorageService>();
-        //services.AddScoped<IActivityService, ActivityService>();
+        
 
         return services;
     }
