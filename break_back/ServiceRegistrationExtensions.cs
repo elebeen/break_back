@@ -3,6 +3,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using nutria.Application.UseCases.Auth.Commands;
+using nutria.Application.UseCases.Auth.Queries;
 using Nutria.Infrastructure;
 
 namespace break_back;
@@ -73,7 +75,10 @@ public static class ServiceRegistrationExtensions
         services.AddMediatR(cfg => 
         {
             cfg.RegisterServicesFromAssemblies(
-                Assembly.GetExecutingAssembly()
+
+                Assembly.GetExecutingAssembly(),
+                typeof(LoginUserCommand).Assembly,
+                typeof(RegisterUserCommand).Assembly
             );
             cfg.LicenseKey = configuration["LicenseKey"];
         });

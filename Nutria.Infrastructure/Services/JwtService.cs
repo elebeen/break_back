@@ -16,7 +16,8 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public string GenerateJwtToken(string userId, string userName, string role)
+    //public string GenerateJwtToken(string userId, string userName, string role)
+    public string GenerateJwtToken(string userId, string userName)
     {
         // 1. Crear los Claims (datos dentro del token)
         var claims = new[]
@@ -24,7 +25,7 @@ public class JwtService : IJwtService
             new Claim(JwtRegisteredClaimNames.Sub, userId),
             new Claim(JwtRegisteredClaimNames.UniqueName, userName),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Role, role)
+            //new Claim(ClaimTypes.Role, role)
         };
 
         // 2. Obtener la llave secreta que usaste en ServiceRegistrationExtensions.cs
@@ -36,7 +37,7 @@ public class JwtService : IJwtService
             issuer: "languagebridgesolutions.com",
             audience: "languagebridgesolutions.com",
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(2), // Tiempo de expiración
+            expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: creds
         );
 
