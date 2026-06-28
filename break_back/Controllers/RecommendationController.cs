@@ -15,8 +15,8 @@ public class RecommendationController : ControllerBase
         _mediator = mediator;
     }
     
-    [HttpGet("/{userId}/")]
-    public async Task<IActionResult> GetSmartMenu(GetAnalyzedMenuQuery query)
+    [HttpGet]
+    public async Task<IActionResult> GetSmartMenu([FromQuery] GetAnalyzedMenuQuery query)
     {
         var menu = await _mediator.Send(query);
         return Ok(menu);

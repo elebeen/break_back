@@ -5,7 +5,7 @@ using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Recommendation.Queries;
 
-public abstract record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWithIndicatorsDto>>;
+public record GetAnalyzedMenuQuery(Guid UserId) : IRequest<List<MealWithIndicatorsDto>>;
 
 internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzedMenuQuery, List<MealWithIndicatorsDto>>
 {
@@ -14,6 +14,11 @@ internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzed
 
     public async Task<List<MealWithIndicatorsDto>> Handle(GetAnalyzedMenuQuery request, CancellationToken cancellationToken)
     {
-       return await _unitOfWork.Meals.GetCompatibleMealsAsync(request.UserId);
+       var res = await _unitOfWork.Meals.GetCompatibleMealsAsync(request.UserId);
+
+       if (res == null)
+           throw new ArgumentException("No related meals found");
+       
+       return res;
     }
 }
