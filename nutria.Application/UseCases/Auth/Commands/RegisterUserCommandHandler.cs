@@ -3,6 +3,7 @@ using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Auth.Commands;
 

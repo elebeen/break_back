@@ -2,6 +2,7 @@ using MediatR;
 using Nutria.Domain.Dtos.Checkout;
 using Nutria.Domain.Dtos.Order;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
 

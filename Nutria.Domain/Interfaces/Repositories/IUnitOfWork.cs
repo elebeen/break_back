@@ -1,4 +1,4 @@
-﻿namespace Nutria.Domain.Interfaces;
+﻿namespace Nutria.Domain.Interfaces.Repositories;
 
 public interface IUnitOfWork
 {

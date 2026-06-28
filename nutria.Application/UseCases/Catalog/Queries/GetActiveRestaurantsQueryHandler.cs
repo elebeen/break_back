@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.Restaurant;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Catalog.Queries;
 

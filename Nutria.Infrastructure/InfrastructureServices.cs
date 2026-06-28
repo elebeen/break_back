@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
+using Nutria.Domain.Interfaces.Services;
 using Nutria.Infrastructure.Persistence.Context;
 using Nutria.Infrastructure.Repositories;
 using Nutria.Infrastructure.Services;

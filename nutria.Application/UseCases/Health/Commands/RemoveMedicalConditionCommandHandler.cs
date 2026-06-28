@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Health.Commands;
 

@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Services;
 
 namespace Nutria.Infrastructure.Services;
 

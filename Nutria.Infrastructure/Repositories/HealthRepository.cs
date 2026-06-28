@@ -3,6 +3,7 @@ using Nutria.Domain.Dtos.HealthProfile;
 using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 using Nutria.Infrastructure.Persistence.Context;
 

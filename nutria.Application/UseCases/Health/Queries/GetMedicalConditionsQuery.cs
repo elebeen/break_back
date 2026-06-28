@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Health.Queries;
 

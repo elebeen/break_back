@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Nutria.Domain.Interfaces;
+namespace Nutria.Domain.Interfaces.Repositories;
 
 public interface IRepository<TEntity> where TEntity : class
 {

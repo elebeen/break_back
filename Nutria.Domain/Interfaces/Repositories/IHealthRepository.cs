@@ -2,7 +2,7 @@ using Nutria.Domain.Dtos.MedicalCondition;
 using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Models;
 
-namespace Nutria.Domain.Interfaces;
+namespace Nutria.Domain.Interfaces.Repositories;
 
 public interface IHealthRepository
 {

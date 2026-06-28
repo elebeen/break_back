@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Orders.Commands;

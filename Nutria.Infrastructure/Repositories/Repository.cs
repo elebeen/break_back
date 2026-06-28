@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Infrastructure.Persistence.Context;
 
 namespace Nutria.Infrastructure.Repositories;

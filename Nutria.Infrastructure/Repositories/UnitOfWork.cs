@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Nutria.Domain.Interfaces;
+using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 using Nutria.Infrastructure.Persistence.Context;
 
