@@ -16,12 +16,13 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
     
+    [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
         var token = await _mediator.Send(command);
 
-        return Ok( new { message = "Login exitosamente" , token});
+        return Ok( new { token });
     }
 
     [HttpPost]

@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.User;
-using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces.Repositories;
+using Nutria.Domain.Interfaces.Services;
 
 namespace nutria.Application.UseCases.Auth.Queries;
 
@@ -29,7 +28,8 @@ internal sealed record LoginUserQueryHandler : IRequestHandler<LoginUserCommand,
         if (existingUser == null ||
             !BCrypt.Net.BCrypt.Verify(request.UserLogin.Password, existingUser.PasswordHash))
         {
-            return "Credentials do not match";
+            //return "Credentials do not match";
+            throw new ArgumentException("Invalid credentials");
         }
 
         var token = _jwtService.GenerateJwtToken(

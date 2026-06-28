@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.User;
-using Nutria.Domain.Interfaces;
 using Nutria.Domain.Models;
-using Microsoft.EntityFrameworkCore;
 using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Auth.Commands;
@@ -24,7 +22,10 @@ internal sealed record RegisterUserCommandHandler
         var existingUser = await  _unitOfWork.Repository<User>().FindFirstAsync(u => u.Email == request.UserRegister.Email);
 
         if (existingUser != null)
-            return false;
+        {
+            //return false;
+            throw new ArgumentException("Email already exists");
+        }
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.UserRegister.Password);
 
