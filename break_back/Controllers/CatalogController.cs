@@ -30,7 +30,7 @@ public class CatalogController : ControllerBase
         return Ok(menu);
     }
 
-    [HttpGet("meals/")]
+    [HttpGet("meal")]
     public async Task<IActionResult> GetMeal([FromQuery] GetMealDetailsQuery query)
     {
         var meal = await _mediator.Send(query);

@@ -17,31 +17,31 @@ public class HealthController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("/profile/{userId}")]
-    public async Task<UserHealthProfileDto> GetProfile(GetUserProfileQuery query)
+    [HttpGet("Profile/")]
+    public async Task<UserHealthProfileDto> GetProfile([FromQuery] GetUserProfileQuery query)
     {
         return await _mediator.Send(query);
     }
     
-    [HttpPost]
-    public async Task<IActionResult> UpdateProfile(UpdateHealthProfileCommand command)
+    [HttpPost("Profile/Update")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateHealthProfileCommand command)
     {
-        await _mediator.Send(command);
+        var res = await _mediator.Send(command);
 
-        return NoContent();
+        return Ok( new { message = res } );
     }
 
-    [HttpPost("conditions/{conditionId}")]
-    public async Task<IActionResult> AddCondition(AddMedicalConditionCommand command)
+    [HttpPost("Condition/Add")]
+    public async Task<IActionResult> AddCondition([FromBody] AddMedicalConditionCommand command)
     {
-        await _mediator.Send(command);
-        return Ok(new { message = "Condición añadida correctamente" });
+        var res = await _mediator.Send(command);
+        return Ok(new { message = res });
     }
 
-    [HttpDelete("/{userId}/")]
-    public async Task<IActionResult> RemoveCondition(RemoveMedicalConditionCommand command)
+    [HttpDelete("Condition/Delete")]
+    public async Task<IActionResult> RemoveCondition([FromQuery] RemoveMedicalConditionCommand command)
     {
-        await _mediator.Send(command);
-        return Ok( new { message = "Condición eliminda correctamente"});
+        var res = await _mediator.Send(command);
+        return Ok( new { message = res });
     }
 }
