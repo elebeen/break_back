@@ -14,7 +14,7 @@ internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzed
 
     public async Task<List<MealWithIndicatorsDto>> Handle(GetAnalyzedMenuQuery request, CancellationToken cancellationToken)
     {
-       var res = await _unitOfWork.Meals.GetCompatibleMealsAsync(request.UserId);
+       var res = await _unitOfWork.Meals.GetMealsByUserId(request.UserId);
 
        if (res == null)
            throw new ArgumentException("No related meals found");

@@ -108,7 +108,7 @@ public class MealRepository : Repository<Meal>, IMealRepository
             .ToListAsync();
     }
     
-    public async Task<List<MealWithIndicatorsDto>> GetCompatibleMealsAsync(Guid userId)
+    public async Task<List<MealWithIndicatorsDto>> GetMealsByUserId(Guid userId)
     {
         var profile = await _context.HealthProfiles
             .FirstOrDefaultAsync(x => x.UserId == userId);

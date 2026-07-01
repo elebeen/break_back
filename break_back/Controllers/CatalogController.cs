@@ -19,9 +19,9 @@ public class CatalogController : ControllerBase
     }
 
     [HttpGet("restaurants")]
-    public async Task<IActionResult> GetAllRestaurants()
+    public async Task<IActionResult> GetAllRestaurants(GetAllRestaurantsQuery query)
     {
-        var res = await _mediator.Send(new  GetAllRestaurantsQuery());
+        var res = await _mediator.Send(query);
         return Ok(res);
     }
 
@@ -40,10 +40,9 @@ public class CatalogController : ControllerBase
     }
     
     [HttpGet("meals")]
-    public async Task<IActionResult> GetMeals()
+    public async Task<IActionResult> GetMeals(GetAllMealsQuery query)
     {
-        var meals = await _mediator.Send(new GetAllMealsQuery());
-
+        var meals = await _mediator.Send(query);
         return Ok(meals);
     }
 }

@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Nutria.Domain.Interfaces;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Catalog.Queries;
+namespace nutria.Application.UseCases.Recommendation.Queries;
 public record GetMealsByNutritionalObjectiveQuery(string Objective)
     : IRequest<List<Meal>>;
 
