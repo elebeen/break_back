@@ -2,7 +2,7 @@
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
 
-namespace nutria.Application.UseCases.Catalog.Queries;
+namespace nutria.Application.UseCases.Restaurants.Queries;
 
 public record GetMenuByRestaurantQuery(Guid RestaurantId) : IRequest<IEnumerable<MealDto>>;
 

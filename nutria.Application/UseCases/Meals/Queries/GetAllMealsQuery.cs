@@ -2,7 +2,7 @@
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
 
-namespace nutria.Application.UseCases.Catalog.Queries;
+namespace nutria.Application.UseCases.Meals.Queries;
 
 public record GetAllMealsQuery()
     : IRequest<List<MealDto>>;

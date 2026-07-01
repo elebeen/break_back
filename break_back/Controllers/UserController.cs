@@ -19,7 +19,7 @@ public class UserController : ControllerBase
     }
     
     [HttpGet("Profile/")]
-    public async Task<IActionResult> GetProfile([FromQuery] GetUserProfileQuery query)
+    public async Task<IActionResult> Get([FromQuery] GetUserProfileQuery query)
     {
         var res = await _mediator.Send(query);
         return Ok(res);
@@ -32,7 +32,7 @@ public class UserController : ControllerBase
     }
     
     [HttpDelete("Profile/Delete")]
-    public async Task<IActionResult> DeleteUser([FromQuery] DeleteUserCommand command)
+    public async Task<IActionResult> Delete([FromQuery] DeleteUserCommand command)
     {
         var result = await _mediator.Send(command);
         return Ok(new { message = result });

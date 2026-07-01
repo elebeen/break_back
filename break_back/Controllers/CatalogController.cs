@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using nutria.Application.UseCases.Catalog.Queries;
+using nutria.Application.UseCases.Meals.Queries;
 using nutria.Application.UseCases.Restaurants.Queries;
 
 namespace break_back.Controllers;
@@ -37,12 +37,5 @@ public class CatalogController : ControllerBase
     {
         var meal = await _mediator.Send(query);
         return Ok(meal);
-    }
-    
-    [HttpGet("meals")]
-    public async Task<IActionResult> GetMeals(GetAllMealsQuery query)
-    {
-        var meals = await _mediator.Send(query);
-        return Ok(meals);
     }
 }

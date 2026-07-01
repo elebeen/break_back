@@ -2,7 +2,7 @@
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
-namespace nutria.Application.UseCases.Catalog.Commands;
+namespace nutria.Application.UseCases.Meals.Commands;
 
 public record UpdateMealNutritionalInfoCommand(
     Guid MealId,

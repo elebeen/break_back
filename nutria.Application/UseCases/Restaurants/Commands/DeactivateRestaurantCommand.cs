@@ -1,13 +1,12 @@
 ﻿using MediatR;
-using Nutria.Domain.Interfaces;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurants.Commands;
 
-public record DeactivateRestaurantCommand(Guid RestaurantId) : IRequest<bool>;
+public record DeactivateRestaurantCommand(Guid RestaurantId) : IRequest<string>;
 
-public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRestaurantCommand, bool>
+public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRestaurantCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -16,11 +15,19 @@ public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRest
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(DeactivateRestaurantCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeactivateRestaurantCommand request, CancellationToken cancellationToken)
     {
         var restaurant = await _unitOfWork.Repository<Restaurant>().FindFirstAsync(r => r.Id == request.RestaurantId);
-        
-        if (restaurant == null) return false;
+
+        if (restaurant == null)
+        {
+            return "Restaurant not found";
+        };
+
+        if (restaurant.IsActive == false)
+        {
+            return "Restaurant is already inactive";
+        };
 
         restaurant.IsActive = false;
         
@@ -28,6 +35,6 @@ public class DeactivateRestaurantCommandHandler : IRequestHandler<DeactivateRest
         
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "Restaurant deactivated successfully";
     }
 }

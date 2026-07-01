@@ -1,17 +1,13 @@
 ﻿using MediatR;
-using Nutria.Domain.Interfaces;
+using Nutria.Domain.Dtos.Restaurant;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurants.Commands;
 
-public record RegisterRestaurantCommand(
-    string Name,
-    string Address,
-    string Phone
-) : IRequest<Guid>;
+public record RegisterRestaurantCommand(RestaurantDto RestaurantDto) : IRequest<string>;
 
-public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaurantCommand, Guid>
+public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaurantCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -20,13 +16,20 @@ public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaura
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> Handle(RegisterRestaurantCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(RegisterRestaurantCommand request, CancellationToken cancellationToken)
     {
+        var existingRes = _unitOfWork.Repository<Restaurant>().FindFirstAsync(u => u.Name == request.RestaurantDto.Name);
+
+        if (existingRes != null)
+        {
+            throw new ArgumentException("Restaurant already exists");
+        }
+        
         var restaurant = new Restaurant
         {
-            Name = request.Name,
-            Address = request.Address,
-            ContactPhone = request.Phone,
+            Name = request.RestaurantDto.Name,
+            Address = request.RestaurantDto.Address,
+            ContactPhone = request.RestaurantDto.ContactPhone,
             IsActive = true
         };
 
@@ -34,6 +37,6 @@ public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaura
         
         await _unitOfWork.SaveChanges();
 
-        return restaurant.Id;
+        return "Restaurant registered successfully";
     }
 }
