@@ -192,4 +192,35 @@ public class MealRepository : Repository<Meal>, IMealRepository
             .ToListAsync();
     }
     
+    public async Task<List<MealDto>> GetAllMealsAsync()
+    {
+        return await _context.Meals
+            .AsNoTracking()
+            .Where(m => m.IsActive == true)
+            .Select(m => new MealDto
+            {
+                Id = m.Id,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                ImageUrl = m.ImageUrl,
+                IsActive = m.IsActive,
+
+                NutritionalInfo = m.NutritionalInfo == null
+                    ? null
+                    : new NutritionalInfoDto
+                    {
+                        Calories = m.NutritionalInfo.Calories,
+                        ProteinG = m.NutritionalInfo.ProteinG,
+                        CarbsG = m.NutritionalInfo.CarbsG,
+                        FatsG = m.NutritionalInfo.FatsG,
+                        SodiumMg = m.NutritionalInfo.SodiumMg,
+                        SugarG = m.NutritionalInfo.SugarG,
+                        FiberG = m.NutritionalInfo.FiberG
+                    }
+
+            })
+            .ToListAsync();
+    }
+    
 }

@@ -19,4 +19,6 @@ public interface IMealRepository
     Task<List<MealWithIndicatorsDto>> GetCompatibleMealsAsync(Guid userId);
     
     Task<List<Meal>> SearchMealsByNameAsync(string name);
+    
+    Task<List<MealDto>> GetAllMealsAsync();
 }

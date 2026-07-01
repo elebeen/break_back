@@ -36,4 +36,12 @@ public class CatalogController : ControllerBase
         var meal = await _mediator.Send(query);
         return Ok(meal);
     }
+    
+    [HttpGet("meals")]
+    public async Task<IActionResult> GetMeals()
+    {
+        var meals = await _mediator.Send(new GetAllMealsQuery());
+
+        return Ok(meals);
+    }
 }
