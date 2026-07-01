@@ -1,11 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using nutria.Application.UseCases.Health.Commands;
 using nutria.Application.UseCases.Health.Queries;
 using Nutria.Domain.Dtos.User;
 
 namespace break_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class HealthController : ControllerBase
