@@ -1,9 +1,11 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using nutria.Application.UseCases.Recommendation.Queries;
 
 namespace break_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class RecommendationController : ControllerBase

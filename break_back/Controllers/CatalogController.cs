@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using nutria.Application.UseCases.Catalog.Queries;
 using nutria.Application.UseCases.Restaurants.Queries;
 
 namespace break_back.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class CatalogController : ControllerBase
