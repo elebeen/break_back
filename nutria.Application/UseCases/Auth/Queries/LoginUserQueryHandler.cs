@@ -32,6 +32,11 @@ internal sealed record LoginUserQueryHandler : IRequestHandler<LoginUserCommand,
             throw new ArgumentException("Invalid credentials");
         }
 
+        if (existingUser.Role == "Eliminado")
+        {
+            throw new ArgumentException("User Not Found");
+        }
+
         var token = _jwtService.GenerateJwtToken(
             existingUser.Id.ToString(),
             existingUser.FullName);

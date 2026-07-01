@@ -7,6 +7,8 @@ public class UserHealthProfileDto
 {
     public Guid UserId { get; set; }
     public string FullName { get; set; } = null!;   // o Email, etc.
+    
+    public string Email { get; set; }
 
     // HealthProfile
     public HealthProfileGetDto? HealthProfile { get; set; }

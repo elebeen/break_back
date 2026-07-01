@@ -5,10 +5,10 @@ using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Auth.Commands;
 
-public record RegisterUserCommand(UserRegisterDto UserRegister) : IRequest<bool>;
+public record RegisterUserCommand(UserRegisterDto UserRegister) : IRequest<string>;
 
 internal sealed record RegisterUserCommandHandler
-    : IRequestHandler<RegisterUserCommand, bool>
+    : IRequestHandler<RegisterUserCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -17,7 +17,7 @@ internal sealed record RegisterUserCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var existingUser = await  _unitOfWork.Repository<User>().FindFirstAsync(u => u.Email == request.UserRegister.Email);
 
@@ -39,6 +39,6 @@ internal sealed record RegisterUserCommandHandler
         await _unitOfWork.Repository<User>().AddAsync(newUser);
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "User successfully registered";
     }
 }

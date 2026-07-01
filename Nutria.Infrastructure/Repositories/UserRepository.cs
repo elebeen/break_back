@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Nutria.Domain.Interfaces;
+using Nutria.Domain.Dtos.User;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 using Nutria.Infrastructure.Persistence.Context;
@@ -23,9 +23,16 @@ public class UserRepository(AppdbContext context) : Repository<User>(context), I
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async Task<bool> ExistsByEmailAsync(string email)
+    public async Task<UserInfoDto?> GetUserInfoAsync(Guid userId)
     {
         return await _context.Users
-            .AnyAsync(u => u.Email == email);
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(o => new UserInfoDto
+                {
+                    Id = o.Id,
+                    Email = o.Email,
+                    FullName = o.FullName
+                }).FirstOrDefaultAsync();
     }
 }

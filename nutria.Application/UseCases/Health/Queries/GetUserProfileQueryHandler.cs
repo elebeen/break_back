@@ -24,6 +24,6 @@ internal sealed record GetUserProfileQueryHandler
             throw new ArgumentException("User not found");
         }
         
-        return await _unitOfWork.Health.GetUserHealthData(request.UserId);
+        return await _unitOfWork.Health.GetUserProfileWithHealthData(request.UserId);
     }
 }

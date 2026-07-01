@@ -17,7 +17,7 @@ public class HealthRepository : IHealthRepository
         _appdbContext = appdbContext;
     }
 
-    public async Task<UserHealthProfileDto?> GetUserHealthData(Guid userId)
+    public async Task<UserHealthProfileDto?> GetUserProfileWithHealthData(Guid userId)
     {   
         return await _appdbContext.Users
             .AsNoTracking()
@@ -26,6 +26,7 @@ public class HealthRepository : IHealthRepository
             {
                 UserId = u.Id,
                 FullName = u.FullName,
+                Email = u.Email,
 
                 HealthProfile = u.HealthProfile != null ? new HealthProfileGetDto
                 {

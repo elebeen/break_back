@@ -5,9 +5,7 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
-public record UpdateHealthProfileCommand(
-    HealthProfileCreateDto ProfileData
-) : IRequest<string>;
+public record UpdateHealthProfileCommand(HealthProfileCreateDto ProfileData) : IRequest<string>;
 
 internal sealed class UpdateHealthProfileCommandHandler
     : IRequestHandler<UpdateHealthProfileCommand,  string>

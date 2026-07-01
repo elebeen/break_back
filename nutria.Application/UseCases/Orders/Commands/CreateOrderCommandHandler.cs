@@ -74,7 +74,7 @@ public class CreateOrderCommandHandler
         await _unitOfWork.SaveChanges();
 
         var response = await _unitOfWork.Orders
-            .GetOrderResponseAsync(order.Id);
+            .GetOrderDetailsByIdAsync(order.Id);
 
         return response
                ?? throw new Exception("No se pudo generar la orden.");

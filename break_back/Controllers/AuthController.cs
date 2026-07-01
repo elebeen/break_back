@@ -29,13 +29,8 @@ public class AuthController : ControllerBase
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         var success = await _mediator.Send(command);
 
-        if (!success)
-            return BadRequest("El usuario ya existe o hubo un error.");
-
-        return Ok(new { message = "Usuario registrado exitosamente" });
+        return Ok( new { message = success });
     }
 }
