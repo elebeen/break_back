@@ -11,17 +11,10 @@ public class IngredientRepository : Repository<Ingredient>, IIngredientRepositor
     public IngredientRepository(AppdbContext context) : base(context) { }
     
 
-    public async Task<List<IngredientDto>> GetIngredientsByIdsAsync(List<int> ingredientIds)
+    public async Task<List<Ingredient>> GetIngredientsByIdsAsync(List<int> ingredientIds)
     {
         return await _context.Ingredients
-            .AsNoTracking()
             .Where(i => ingredientIds.Contains(i.Id))
-            .Select(i => new IngredientDto
-            {
-                Id = i.Id,
-                Name = i.Name,
-                IsAllergen = i.IsAllergen
-            })
             .ToListAsync();
     }
 }

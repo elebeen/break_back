@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Nutria.Domain.Dtos.Ingredient;
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
@@ -28,11 +27,11 @@ internal sealed class CreateMealCommandHandler : IRequestHandler<CreateMealComma
             throw new ArgumentException("The specified restaurant does not exist.");
         }
 
-        // 2. Buscar los ingredientes existentes en la base de datos
-        List<IngredientDto> existingIngredients = new();
+        // 2. Buscar los ingredientes existentes en la base de datos (Deben ser de tipo 'Ingredient')
+        List<Ingredient> existingIngredients = new();
         if (data.IngredientIds != null && data.IngredientIds.Count != 0)
         {
-            // Llamada limpia al repositorio
+            // El repositorio debe retornar List<Ingredient> rastreados por EF Core
             existingIngredients = await _unitOfWork.Ingredients.GetIngredientsByIdsAsync(data.IngredientIds);
 
             // Validación: Verificar si todos los IDs enviados realmente existen
@@ -57,7 +56,6 @@ internal sealed class CreateMealCommandHandler : IRequestHandler<CreateMealComma
             
             NutritionalInfo = new NutritionalInfo
             {
-                Id = Guid.NewGuid(),
                 MealId = mealId,
                 Calories = data.Calories,
                 ProteinG = data.ProteinG,
@@ -68,11 +66,9 @@ internal sealed class CreateMealCommandHandler : IRequestHandler<CreateMealComma
                 FiberG = data.FiberG
             },
 
-            // EF Core creará los registros automáticamente en la tabla intermedia "meal_ingredients"
-            Ingredients = existingIngredients.Select(dto => new Ingredient 
-            { 
-                Id = dto.Id 
-            }).ToList()
+            // CORRECCIÓN CLAVE: Asignamos directamente la lista de entidades rastreadas.
+            // Al no hacer un "new Ingredient", EF Core sabe que ya existen en la BD.
+            Ingredients = existingIngredients
         };
 
         // 4. Guardar y persistir cambios

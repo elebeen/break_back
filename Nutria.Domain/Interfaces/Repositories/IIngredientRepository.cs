@@ -5,5 +5,5 @@ namespace Nutria.Domain.Interfaces.Repositories;
 
 public interface IIngredientRepository : IRepository<Ingredient>
 {
-    Task<List<IngredientDto>> GetIngredientsByIdsAsync(List<int> ingredientIds);
+    Task<List<Ingredient>> GetIngredientsByIdsAsync(List<int> ingredientIds);
 }
