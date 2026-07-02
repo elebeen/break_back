@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Nutria.Domain.Dtos.Ingredient;
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
@@ -22,8 +21,9 @@ internal sealed class UpdateMealCommandHandler : IRequestHandler<UpdateMealComma
         var data = request.MealData;
         var mealId = request.MealId;
 
-        // 1. Verificar que el plato existe
-        var existingMeal = await _unitOfWork.Repository<Meal>().FindFirstAsync(m => m.Id == mealId);
+        // 1. Verificar que el plato existe (Utilizamos el repositorio especializado para incluir las relaciones)
+        // Nota: Asegúrate de usar o implementar una función que traiga el plato con sus relaciones en _unitOfWork.Meals
+        var existingMeal = await _unitOfWork.Meals.GetMealWithNutritionalInfoAsync(mealId);
 
         if (existingMeal == null)
         {
@@ -39,25 +39,28 @@ internal sealed class UpdateMealCommandHandler : IRequestHandler<UpdateMealComma
             throw new ArgumentException("The specified restaurant does not exist.");
         }
 
-        // 3. Validar ingredientes (si se enviaron)
-        List<IngredientDto> existingIngredients = new();
+        // 3. Validar ingredientes (Deben ser de tipo 'Ingredient' con seguimiento de EF Core)
+        List<Ingredient> trackingIngredients = new();
         if (data.IngredientIds != null && data.IngredientIds.Count != 0)
         {
-            existingIngredients = await _unitOfWork.Ingredients.GetIngredientsByIdsAsync(data.IngredientIds);
+            // El repositorio debe retornar List<Ingredient> sin .AsNoTracking()
+            trackingIngredients = await _unitOfWork.Ingredients.GetIngredientsByIdsAsync(data.IngredientIds);
 
-            if (existingIngredients.Count != data.IngredientIds.Count)
+            if (trackingIngredients.Count != data.IngredientIds.Count)
             {
                 throw new ArgumentException("One or more specified ingredient IDs do not exist in the database.");
             }
         }
 
-        // 4. Actualizar el Meal
+        // 4. Actualizar las propiedades del Meal
         existingMeal.RestaurantId = data.RestaurantId;
         existingMeal.Name = data.Name;
         existingMeal.Description = data.Description;
         existingMeal.Price = data.Price;
         existingMeal.ImageUrl = data.ImageUrl;
-        existingMeal.IsActive = data.IsActive;
+        
+        // Si data.IsActive es nullable, puedes usar ?? existingMeal.IsActive
+        existingMeal.IsActive = data.IsActive; 
 
         // 5. Actualizar NutritionalInfo
         if (existingMeal.NutritionalInfo != null)
@@ -72,10 +75,8 @@ internal sealed class UpdateMealCommandHandler : IRequestHandler<UpdateMealComma
         }
         else
         {
-            // Por si acaso no tiene NutritionalInfo (caso raro)
             existingMeal.NutritionalInfo = new NutritionalInfo
             {
-                Id = Guid.NewGuid(),
                 MealId = mealId,
                 Calories = data.Calories,
                 ProteinG = data.ProteinG,
@@ -87,25 +88,23 @@ internal sealed class UpdateMealCommandHandler : IRequestHandler<UpdateMealComma
             };
         }
 
-        // 6. Actualizar Ingredientes (Many-to-Many)
+        // 6. Actualizar Ingredientes (Many-to-Many corregido)
         if (data.IngredientIds != null)
         {
-            // Limpiar ingredientes actuales
+            // Limpiamos la colección existente. Al estar bajo seguimiento, EF Core sabe
+            // que debe eliminar estas relaciones específicas de la tabla intermedia "meal_ingredients"
             existingMeal.Ingredients.Clear();
 
-            // Agregar los nuevos
-            if (data.IngredientIds.Count > 0)
+            // Asignamos directamente la lista de entidades reales recuperadas de la BD
+            foreach (var ingredient in trackingIngredients)
             {
-                var newIngredients = existingIngredients.Select(dto => new Ingredient 
-                { 
-                    Id = dto.Id 
-                }).ToList();
-
-                existingMeal.Ingredients = newIngredients;
+                existingMeal.Ingredients.Add(ingredient);
             }
         }
 
         // 7. Guardar cambios
+        // EF Core generará automáticamente los UPDATES para Meal y NutritionalInfo, 
+        // y se encargará de sincronizar (INSERTs/DELETEs) la tabla "meal_ingredients"
         await _unitOfWork.SaveChanges();
 
         return "Meal updated successfully.";
