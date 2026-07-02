@@ -17,8 +17,6 @@ public class GetAllRestaurantsQueryHandler : IRequestHandler<GetAllRestaurantsQu
 
     public async Task<List<RestaurantDto>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
     {
-
-        var result = await _restaurantRepository.GetActiveRestaurantsAsync();
-        return result;
+        return await _restaurantRepository.GetActiveRestaurantsAsync();
     }
 }

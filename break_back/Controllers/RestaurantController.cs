@@ -19,7 +19,7 @@ public class RestaurantController : ControllerBase
     }
 
     [HttpGet("profile")]
-    public async Task<ActionResult> Get(GetRestaurantInfoQuery  query)
+    public async Task<ActionResult> Get([FromQuery] GetRestaurantInfoQuery  query)
     {
         var res = await _mediator.Send(query);
         return Ok(res);
@@ -32,15 +32,15 @@ public class RestaurantController : ControllerBase
         return Ok(res);
     }
 
-    [HttpPost("update")]
-    public async Task<ActionResult> Update([FromBody] RegisterRestaurantCommand command)
+    [HttpPut("update")]
+    public async Task<ActionResult> Update([FromBody] EditRestaurantCommand command)
     {
         var res = await  _mediator.Send(command);
         return Ok(res);
     }
 
-    [HttpPost("delete")]
-    public async Task<ActionResult> Delete([FromQuery] RegisterRestaurantCommand command)
+    [HttpDelete("delete")]
+    public async Task<ActionResult> Delete([FromQuery] DeactivateRestaurantCommand command)
     {
         var res = await  _mediator.Send(command);
         return Ok(res);

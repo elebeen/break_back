@@ -19,9 +19,9 @@ public class CatalogController : ControllerBase
     }
 
     [HttpGet("restaurants")]
-    public async Task<IActionResult> GetAllRestaurants(GetAllRestaurantsQuery query)
+    public async Task<IActionResult> GetAllRestaurants()
     {
-        var res = await _mediator.Send(query);
+        var res = await _mediator.Send(new GetAllRestaurantsQuery());
         return Ok(res);
     }
 

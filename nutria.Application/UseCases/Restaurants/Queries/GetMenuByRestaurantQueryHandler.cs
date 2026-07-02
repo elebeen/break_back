@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
+using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurants.Queries;
 
@@ -13,6 +14,22 @@ internal sealed record GetMenuByRestaurantQueryHandler : IRequestHandler<GetMenu
 
     public async Task<IEnumerable<MealDto>> Handle(GetMenuByRestaurantQuery request, CancellationToken cancellationToken)
     {
+        var res = await _unitOfWork.Repository<Restaurant>().FindFirstAsync(r => r.IsActive == false);
+
+        var restaurant = await _unitOfWork.Repository<Restaurant>()
+            .FindFirstAsync(r => r.Id == request.RestaurantId);
+
+        if (restaurant == null)
+        {
+            throw new ArgumentException("Restaurant not found.");
+        }
+
+        // 2. Si el restaurante está desactivado, lanzamos la excepción con el string
+        if (restaurant.IsActive == false)
+        {
+            throw new ArgumentException("Restaurant is deactivated.");
+        }
+        
         return await _unitOfWork.Meals.GetMealsByRestaurantAsync(request.RestaurantId);
     }
 }

@@ -39,8 +39,15 @@ public class OrdersController : ControllerBase
         return Ok(res);
     }
 
-    [HttpPost("update")]
+    [HttpPut("update")]
     public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderStatusCommand command)
+    {
+        var res = await _mediator.Send(command);
+        return Ok(res);
+    }
+    
+    [HttpPut("cancel")]
+    public async Task<IActionResult> CancelOrder([FromBody] CancelOrderCommand command)
     {
         var res = await _mediator.Send(command);
         return Ok(res);

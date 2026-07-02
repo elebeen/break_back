@@ -28,6 +28,7 @@ internal sealed record EditRestaurantCommandHandler : IRequestHandler<EditRestau
         res.Name = request.Restaurant.Name;
         res.ContactPhone = request.Restaurant.ContactPhone;
         res.Address = request.Restaurant.Address;
+        res.IsActive = request.Restaurant.IsActive;
         
         await _unitOfWork.Repository<Restaurant>().UpdateAsync(res);
 

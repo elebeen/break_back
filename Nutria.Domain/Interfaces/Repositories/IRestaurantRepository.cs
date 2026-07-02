@@ -6,7 +6,6 @@ namespace Nutria.Domain.Interfaces.Repositories;
 public interface IRestaurantRepository
 {
     Task<List<RestaurantDto>> GetActiveRestaurantsAsync();
-
     Task<Restaurant?> GetRestaurantWithMealsAsync(Guid restaurantId);
     Task<RestaurantDto> GetRestaurantByIdAsync(Guid restaurantId);
 }

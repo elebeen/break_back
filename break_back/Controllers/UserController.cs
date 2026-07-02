@@ -25,7 +25,7 @@ public class UserController : ControllerBase
         return Ok(res);
     }
 
-    [HttpPost("Profile/Edit")]
+    [HttpPut("Profile/Edit")]
     public async Task<IActionResult> Edit([FromBody] EditUserInfoCommand command)
     {
         return Ok(await _mediator.Send(command));

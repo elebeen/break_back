@@ -5,7 +5,7 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Restaurants.Commands;
 
-public record RegisterRestaurantCommand(RestaurantDto RestaurantDto) : IRequest<string>;
+public record RegisterRestaurantCommand(CreateRestaurantDto RestaurantDto) : IRequest<string>;
 
 public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaurantCommand, string>
 {
@@ -18,8 +18,10 @@ public class RegisterRestaurantCommandHandler : IRequestHandler<RegisterRestaura
 
     public async Task<string> Handle(RegisterRestaurantCommand request, CancellationToken cancellationToken)
     {
-        var existingRes = _unitOfWork.Repository<Restaurant>().FindFirstAsync(u => u.Name == request.RestaurantDto.Name);
+        var existingRes = await _unitOfWork.Repository<Restaurant>().FindFirstAsync(u => u.Name == request.RestaurantDto.Name);
 
+        Console.WriteLine(existingRes);
+        
         if (existingRes != null)
         {
             throw new ArgumentException("Restaurant already exists");

@@ -24,7 +24,7 @@ public class MealsController : ControllerBase
         return Ok(new { message = result });
     }
 
-    [HttpPost("update")]
+    [HttpPut("update")]
     public async Task<IActionResult> UpdateMeal([FromBody] UpdateMealCommand command )
     {
         var res = await _mediator.Send(command);

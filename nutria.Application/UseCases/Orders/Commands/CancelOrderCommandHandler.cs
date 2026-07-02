@@ -5,10 +5,9 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Orders.Commands;
 
-public record CancelOrderCommand(Guid OrderId)
-    : IRequest<bool>;
+public record CancelOrderCommand(Guid OrderId) : IRequest<string>;
 
-public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, bool>
+public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -17,12 +16,12 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
     {
         var order = await _unitOfWork.Repository<Order>().FindFirstAsync(u =>  u.Id == request.OrderId);
 
         if (order is null)
-            return false;
+            return "Order not found";
 
         order.OrderStatus = "Cancelado";
 
@@ -30,6 +29,6 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, boo
 
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "Order canceled";
     }
 }

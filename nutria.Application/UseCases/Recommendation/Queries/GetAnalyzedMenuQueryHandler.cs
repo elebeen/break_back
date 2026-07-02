@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Nutria.Domain.Dtos.Meal;
-using Nutria.Domain.Interfaces;
 using Nutria.Domain.Interfaces.Repositories;
 
 namespace nutria.Application.UseCases.Recommendation.Queries;
@@ -17,7 +16,9 @@ internal sealed record GetAnalyzedMenuQueryHandler : IRequestHandler<GetAnalyzed
        var res = await _unitOfWork.Meals.GetMealsByUserId(request.UserId);
 
        if (res == null)
+       {
            throw new ArgumentException("No related meals found");
+       }
        
        return res;
     }

@@ -26,6 +26,7 @@ internal sealed record EditUserInfoCommandHandler : IRequestHandler<EditUserInfo
         }
 
         // 2. Modificamos únicamente los campos deseados sobre el usuario recuperado
+        user.Id = request.UserInfo.Id;
         user.FullName = request.UserInfo.FullName;
         user.Email = request.UserInfo.Email;
 
