@@ -8,10 +8,9 @@ namespace nutria.Application.UseCases.Orders.Commands;
 public record UpdateOrderStatusCommand(
     Guid OrderId,
     string Status
-) : IRequest<bool>;
+) : IRequest<string>;
 
-public class UpdateOrderStatusCommandHandler
-    : IRequestHandler<UpdateOrderStatusCommand, bool>
+public class UpdateOrderStatusCommandHandler : IRequestHandler<UpdateOrderStatusCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -20,14 +19,12 @@ public class UpdateOrderStatusCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(
-        UpdateOrderStatusCommand request,
-        CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
     {
         var order = await _unitOfWork.Repository<Order>().FindFirstAsync(u => u.Id == request.OrderId);
 
         if (order is null)
-            return false;
+            return "Order not found";
 
         order.OrderStatus = request.Status;
 
@@ -35,6 +32,6 @@ public class UpdateOrderStatusCommandHandler
 
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "Order updated";
     }
 }

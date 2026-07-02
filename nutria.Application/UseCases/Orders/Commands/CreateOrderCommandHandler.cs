@@ -10,8 +10,7 @@ namespace nutria.Application.UseCases.Orders.Commands;
 
 public record CreateOrderCommand(CheckoutRequest CheckoutRequest) : IRequest<OrderResponse>;
 
-public class CreateOrderCommandHandler
-    : IRequestHandler<CreateOrderCommand, OrderResponse>
+public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderResponse>
 {
     private readonly IUnitOfWork _unitOfWork;
 

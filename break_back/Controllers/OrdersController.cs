@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using nutria.Application.UseCases.Orders.Commands;
 using nutria.Application.UseCases.Orders.Queries;
 
 namespace break_back.Controllers;
@@ -30,4 +31,19 @@ public class OrdersController : ControllerBase
         var res = await _mediator.Send(query);
         return Ok(res);
     }
+
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
+    {
+        var res = await _mediator.Send(command);
+        return Ok(res);
+    }
+
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderStatusCommand command)
+    {
+        var res = await _mediator.Send(command);
+        return Ok(res);
+    }
+    
 }
