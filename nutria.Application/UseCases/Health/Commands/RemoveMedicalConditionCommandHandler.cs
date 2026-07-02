@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Nutria.Domain.Interfaces.Repositories;
+using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Health.Commands;
 
@@ -20,6 +21,11 @@ internal sealed class RemoveMedicalConditionCommandHandler
 
     public async Task<string> Handle(RemoveMedicalConditionCommand request, CancellationToken cancellationToken)
     {
+        var user = await _unitOfWork.Repository<User>().FindFirstAsync(u => u.Id == request.UserId);
+
+        if (user is null)
+            throw new ArgumentException("User not found.");
+        
         var condition = await _unitOfWork.Health
             .GetConditionByUserId(request.UserId, request.ConditionId);
 
