@@ -1,20 +1,14 @@
 ﻿using MediatR;
+using Nutria.Domain.Dtos.Ingredient;
+using Nutria.Domain.Dtos.Meal;
 using Nutria.Domain.Interfaces.Repositories;
 using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Meals.Commands;
 
-public record CreateMealCommand(
-    string Name,
-    string Description,
-    decimal Price,
-    Guid RestaurantId,
-    int Calories,
-    int SodiumMg,
-    int SugarG
-) : IRequest<bool>;
+public record CreateMealCommand(MealCreateDto MealData) : IRequest<string>;
 
-public class CreateMealCommandHandler : IRequestHandler<CreateMealCommand, bool>
+internal sealed class CreateMealCommandHandler : IRequestHandler<CreateMealCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -23,28 +17,68 @@ public class CreateMealCommandHandler : IRequestHandler<CreateMealCommand, bool>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(CreateMealCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateMealCommand request, CancellationToken cancellationToken)
     {
+        var data = request.MealData;
+
+        // 1. Validar si el restaurante existe
+        var restaurant = await _unitOfWork.Repository<Restaurant>().FindFirstAsync(r => r.Id == data.RestaurantId);
+        if (restaurant == null)
+        {
+            throw new ArgumentException("The specified restaurant does not exist.");
+        }
+
+        // 2. Buscar los ingredientes existentes en la base de datos
+        List<IngredientDto> existingIngredients = new();
+        if (data.IngredientIds != null && data.IngredientIds.Count != 0)
+        {
+            // Llamada limpia al repositorio
+            existingIngredients = await _unitOfWork.Ingredients.GetIngredientsByIdsAsync(data.IngredientIds);
+
+            // Validación: Verificar si todos los IDs enviados realmente existen
+            if (existingIngredients.Count != data.IngredientIds.Count)
+            {
+                throw new ArgumentException("One or more specified ingredient IDs do not exist in the database.");
+            }
+        }
+
+        var mealId = Guid.NewGuid();
+
+        // 3. Construir la entidad mapeando los ingredientes recuperados
         var newMeal = new Meal
         {
-            Id = Guid.NewGuid(),
-            Name = request.Name,
-            Description = request.Description,
-            Price = request.Price,
-            RestaurantId = request.RestaurantId,
+            Id = mealId,
+            RestaurantId = data.RestaurantId,
+            Name = data.Name,
+            Description = data.Description,
+            Price = data.Price,
+            ImageUrl = data.ImageUrl,
+            IsActive = true,
+            
             NutritionalInfo = new NutritionalInfo
             {
                 Id = Guid.NewGuid(),
-                Calories = request.Calories,
-                SodiumMg = request.SodiumMg,
-                SugarG = request.SugarG
-            }
+                MealId = mealId,
+                Calories = data.Calories,
+                ProteinG = data.ProteinG,
+                CarbsG = data.CarbsG,
+                FatsG = data.FatsG,
+                SodiumMg = data.SodiumMg,
+                SugarG = data.SugarG,
+                FiberG = data.FiberG
+            },
+
+            // EF Core creará los registros automáticamente en la tabla intermedia "meal_ingredients"
+            Ingredients = existingIngredients.Select(dto => new Ingredient 
+            { 
+                Id = dto.Id 
+            }).ToList()
         };
 
+        // 4. Guardar y persistir cambios
         await _unitOfWork.Repository<Meal>().AddAsync(newMeal);
-        
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "Meal registered and associated with its ingredients successfully.";
     }
 }

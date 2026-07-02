@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using nutria.Application.UseCases.Restaurants.Commands;
 using nutria.Application.UseCases.Restaurants.Queries;
-using Nutria.Domain.Models;
 
 namespace break_back.Controllers;
 
 [Authorize]
 [ApiController]
+[Route("[controller]")]
 public class RestaurantController : ControllerBase
 {
     private readonly IMediator _mediator;

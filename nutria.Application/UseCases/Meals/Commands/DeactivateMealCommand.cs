@@ -4,9 +4,9 @@ using Nutria.Domain.Models;
 
 namespace nutria.Application.UseCases.Meals.Commands;
 
-public record DeactivateMealCommand(Guid MealId) : IRequest<bool>;
+public record DeactivateMealCommand(Guid MealId) : IRequest<string>;
 
-public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealCommand, bool>
+public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -15,14 +15,14 @@ public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealComman
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> Handle(DeactivateMealCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeactivateMealCommand request, CancellationToken cancellationToken)
     {
         var repository = _unitOfWork.Repository<Meal>();
 
         var meal = await repository.FindFirstAsync(x => x.Id == request.MealId);
 
         if (meal is null)
-            return false;
+            return "Meal not found";
 
         meal.IsActive = false;
 
@@ -30,6 +30,6 @@ public class DeactivateMealCommandHandler : IRequestHandler<DeactivateMealComman
 
         await _unitOfWork.SaveChanges();
 
-        return true;
+        return "Meal deleted";
     }
 }

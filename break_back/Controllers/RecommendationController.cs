@@ -26,9 +26,9 @@ public class RecommendationController : ControllerBase
     }
     
     [HttpGet("meals")]
-    public async Task<IActionResult> GetMeals(GetAllMealsQuery query)
+    public async Task<IActionResult> GetMeals()
     {
-        var meals = await _mediator.Send(query);
+        var meals = await _mediator.Send( new GetAllMealsQuery());
         return Ok(meals);
     }
 }

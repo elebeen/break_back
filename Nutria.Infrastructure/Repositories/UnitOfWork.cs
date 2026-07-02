@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
     public IRestaurantRepository Restaurants { get; }
     public IHealthRepository Health { get; }
     public IMedicalConditionRepository MedicalConditions { get; }
+    public IIngredientRepository Ingredients { get; }
     
     public UnitOfWork(
         AppdbContext appdbContext,
@@ -25,7 +26,8 @@ public class UnitOfWork : IUnitOfWork
         IOrderRepository orderRepository,
         IRestaurantRepository restaurantRepository,
         IHealthRepository healthRepository,
-        IMedicalConditionRepository medicalConditionRepository)
+        IMedicalConditionRepository medicalConditionRepository,
+        IIngredientRepository ingredientRepository)
     {
         _appdbContext = appdbContext;
         _repositories = new Hashtable();
@@ -35,6 +37,7 @@ public class UnitOfWork : IUnitOfWork
         Restaurants = restaurantRepository;
         Health = healthRepository;
         MedicalConditions = medicalConditionRepository;
+        Ingredients = ingredientRepository;
     }
 
     public Task<int> SaveChanges()

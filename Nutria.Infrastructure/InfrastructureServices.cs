@@ -28,6 +28,7 @@ public static class InfrastructureServices
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<IHealthRepository, HealthRepository>();
         services.AddScoped<IMedicalConditionRepository, MedicalConditionRepository>();
+        services.AddScoped<IIngredientRepository, IngredientRepository>();
         services.AddScoped<IJwtService, JwtService>();
 
         return services;

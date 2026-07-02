@@ -221,5 +221,4 @@ public class MealRepository : Repository<Meal>, IMealRepository
             })
             .ToListAsync();
     }
-    
 }

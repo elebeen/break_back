@@ -17,14 +17,14 @@ public class OrdersController : ControllerBase
         this._mediator = mediator;
     }
 
-    [HttpGet("History")]
+    [HttpGet("history")]
     public async Task<IActionResult> GetOrdersHistory([FromQuery] GetUserOrdersQuery query)
     {
         var res = await _mediator.Send(query);
         return Ok(res);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("get/{id}")]
     public async Task<IActionResult> GetOrderById([FromRoute] GetOrderByIdQuery query)
     {
         var res = await _mediator.Send(query);
