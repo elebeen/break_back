@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\nutria.Application\nutria.Application.csproj" />
+      <ProjectReference Include="..\Nutria.Application\Nutria.Application.csproj" />
       <ProjectReference Include="..\Nutria.Infrastructure\Nutria.Infrastructure.csproj" />
     </ItemGroup>
 

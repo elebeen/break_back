@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "break_back", "break_back\break_back.csproj", "{8C1B1AD4-2EC7-49D4-9935-80AD8F88DD2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nutria.Application", "nutria.Application\nutria.Application.csproj", "{75F5B04A-337D-4C82-B529-D7578E24AEF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutria.Application", "Nutria.Application\Nutria.Application.csproj", "{75F5B04A-337D-4C82-B529-D7578E24AEF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nutria.Domain", "Nutria.Domain\Nutria.Domain.csproj", "{51AF3B20-7B28-4215-AB6D-C88E92E63544}"
 EndProject
