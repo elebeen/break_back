@@ -48,4 +48,17 @@ public class MedicalConditionRepository : Repository<MedicalCondition>, IMedical
             user.Conditions.Remove(condition);
         }
     }
+
+    public async Task<List<MedicalConditionGetDto>> GetAllConditions()
+    {
+        return await _context.MedicalConditions
+            .AsNoTracking()
+            .Select(c => new MedicalConditionGetDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Type = c.Type,
+            })
+            .ToListAsync();
+    }
 }

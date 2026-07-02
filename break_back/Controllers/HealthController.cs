@@ -18,6 +18,14 @@ public class HealthController : ControllerBase
         _mediator = mediator;
     }
     
+    [HttpPost("conditions")]
+    public async Task<IActionResult> GetAllConditions()
+    {
+        var res = await _mediator.Send(new GetAllCondtionsQuery());
+
+        return Ok(res);
+    }
+    
     [HttpPost("Profile/Update")]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateHealthProfileCommand command)
     {
@@ -26,7 +34,7 @@ public class HealthController : ControllerBase
         return Ok( new { message = res });
     }
 
-    [HttpGet("MedicalConditions")]
+    [HttpGet("MedicalConditions/user")]
     public async Task<IActionResult> GetMedicalConditions([FromQuery] GetMedicalConditionsQuery query)
     {
         var res = await _mediator.Send(query);
