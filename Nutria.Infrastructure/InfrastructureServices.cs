@@ -17,7 +17,27 @@ public static class InfrastructureServices
         //Database Connection
         services.AddDbContext<AppdbContext>(options =>
         {
+            // LOCAL, con con el appsettings.json
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
+            
+            // DEPLOY (RAILWAY), con la DATABASE_URL
+            var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+            if (!string.IsNullOrEmpty(databaseUrl))
+            {
+                var uri = new Uri(databaseUrl);
+                var userInfo = uri.UserInfo.Split(':');
+
+                connectionString =
+                    $"Host={uri.Host};" +
+                    $"Port={uri.Port};" +
+                    $"Database={uri.AbsolutePath.TrimStart('/')};" +
+                    $"Username={userInfo[0]};" +
+                    $"Password={userInfo[1]};" +
+                    $"SSL Mode=Require;Trust Server Certificate=true";
+            }
+
             options.UseNpgsql(connectionString);
         });
 
