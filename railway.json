@@ -1,0 +1,9 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "buildCommand": "dotnet publish break_back/break_back.csproj -c Release -o out"
+  },
+  "deploy": {
+    "startCommand": "./out/break_back"
+  }
+}
